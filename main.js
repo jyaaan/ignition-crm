@@ -10,9 +10,17 @@ var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
 
 // FUNCTIONS
+
+// DOM FUNCTIONS
 var swapVisibility = function($elemToHide, $elemToShow) {
   $elemToHide.classList.add('hidden');
   $elemToShow.classList.remove('hidden');
+};
+
+var clearChildNodes = function($table) {
+  while($table.firstChild) {
+    $table.removeChild($table.firstChild);
+  }
 };
 
 // UI INTERACTION
