@@ -18,9 +18,9 @@ $leadButton.addEventListener('click',function() {
   swapVisibility($landingPageDetails, $leadDetails);
 });
 
-// $homeButton.addEventListener('click', function() {
-//   swapVisibility($leadDetails, @landingPageDetails);
-// });
+$homeButton.addEventListener('click', function() {
+  swapVisibility($leadDetails, $landingPageDetails);
+});
 
 // CHART SCRIPT & DATA
 $(document).ready(function() {
