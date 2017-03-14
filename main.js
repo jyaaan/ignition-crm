@@ -1,8 +1,10 @@
-
+// TEMP VARIABLES
+var arrTemp = ['a', 'b', 'c'];
 
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
+var $leadTable = document.querySelector('#lead-table');
 
 var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
@@ -10,6 +12,15 @@ var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
 
 // FUNCTIONS
+var createElementArrayFromArray = function (arrTableData, type) {
+  var arrRowData = [];
+  var tempElem = document.createElement(type);
+  for (var datum in arrTableData) {
+    tempElem.textContent = datum;
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+};
 
 // DOM FUNCTIONS
 var swapVisibility = function($elemToHide, $elemToShow) {
@@ -23,10 +34,15 @@ var clearChildNodes = function($table) {
   }
 };
 
+var initializeLeadPage = function() {
+
+};
+
 // UI INTERACTION
 $leadButton.addEventListener('click',function() {
   swapVisibility($landingPageDetails, $leadDetails);
-  swapVisibility($landingPageDashboard, $leadDashboard)
+  swapVisibility($landingPageDashboard, $leadDashboard);
+  initializeLeadPage();
 });
 
 $homeButton.addEventListener('click', function() {
