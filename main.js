@@ -26,6 +26,21 @@ $homeButton.addEventListener('click', function() {
   swapVisibility($leadDashboard, $landingPageDashboard);
 });
 
+// Lead Object and Data
+function lead(fname, lname, bname, stage) {
+  this.firstName = fname;
+  this.lastName = lname;
+  this.brand = bname;
+  this.stage = stage;
+};
+
+var leads = [];
+
+function tempInitializeLeads() {
+  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo'));
+  leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations'));
+};
+
 // CHART SCRIPT & DATA
 $(document).ready(function() {
   var title = {
@@ -213,3 +228,6 @@ $(document).ready(function() {
   json.series = series;
   $('.mrr-chart').highcharts(json);
   });
+
+// On run
+tempInitializeLeads();
