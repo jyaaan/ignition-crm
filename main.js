@@ -11,24 +11,35 @@ var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
 
 // FUNCTIONS
-var createElementArrayFromArray = function (arrTableData, type) {
+var createElementPropertyArrayFromArray = function (arrTableData, type) {
   var arrRowData = [];
-  var tempElem = document.createElement(type);
   for (var datum in arrTableData) {
-    console.log(datum);
+    var tempElem = document.createElement(type);
     tempElem.textContent = datum;
     arrRowData.push(tempElem);
   }
   return arrRowData;
 };
-var tempElem;
+
+var createElementValueArrayFromArray = function (arrTableData, type) {
+  var arrRowData = [];
+  for (var datum in arrTableData) {
+    var tempElem = document.createElement(type);
+    tempElem.textContent = arrTableData[datum];
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+};
+
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('th');
-  var $row;
-  var arrRows = [];
-  $header = appendArrAsChild($header, createElementArrayFromArray(leads[0], 'td'));
-  // $table.appendChild(headers);
-  return $header;
+  $header = appendArrAsChild($header, createElementPropertyArrayFromArray(leads[0], 'td'));
+  $table.appendChild($header);
+  for (var lead in leads) {
+    var $row = document.createElement('tr');
+    $row = appendArrAsChild($row, createElementValueArrayFromArray(leads[lead], 'td'));
+    $table.appendChild($row);
+  };
 };
 
 var appendArrAsChild = function ($node, arrElements) {
