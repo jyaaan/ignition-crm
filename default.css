@@ -30,7 +30,16 @@
   float: right;
 }
 
-.container {
+#dashboard-container {
   border: 1px black;
   margin: 5px;
+}
+
+#details-container {
+  border: 1px black;
+  margin: 5px;
+}
+
+.hidden {
+  display: none;
 }
