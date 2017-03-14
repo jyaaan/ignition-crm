@@ -1,5 +1,4 @@
 // TEMP VARIABLES
-var $popupTestButton = document.querySelector('#button-popup-test');
 
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
@@ -14,6 +13,12 @@ var $landingPageDetails = document.querySelector('#landing-page-details');
 var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
 
+var $puLeadFirstName = document.querySelector('#lead-first-name');
+var $puLeadLastName = document.querySelector('#lead-last-name');
+var $puLeadBrandName = document.querySelector('#lead-brand-name');
+var $puLeadId = document.querySelector('#lead-id');
+var $puLeadStage = document.querySelector('#lead-stage');
+
 // FUNCTIONS
 var createElementPropertyArrayFromArray = function (arrTableData, type) {
   var arrRowData = [];
@@ -25,10 +30,11 @@ var createElementPropertyArrayFromArray = function (arrTableData, type) {
   return arrRowData;
 }
 
-var createElementValueArrayFromArray = function (arrTableData, type) {
+var createElemValArrayLeadId = function (arrTableData, type, leadId) {
   var arrRowData = [];
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
+    tempElem.setAttribute('lead-id', leadId)
     tempElem.textContent = arrTableData[datum];
     arrRowData.push(tempElem);
   }
@@ -41,7 +47,8 @@ var createTableElements = function(leads, $table) {
   $table.appendChild($header);
   for (var lead in leads) {
     var $row = document.createElement('tr');
-    $row = appendArrAsChild($row, createElementValueArrayFromArray(leads[lead], 'td'));
+    $row.setAttribute('lead-id', leads[lead].id);
+    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id));
     $table.appendChild($row);
   }
 }
@@ -82,19 +89,24 @@ $homeButton.addEventListener('click', function () {
   swapVisibility($leadDashboard, $landingPageDashboard);
 })
 
-// POPUP FUNCTIONS
-$popupTestButton.onclick = function () {
-  $leadEditPU.style.display = 'inline-block';
-}
+$leadTable.addEventListener('click', function (event) {
+  var leadId = event.target.getAttribute('lead-id');
+  if (typeof leadId !== undefined) {
+    var currentLead = leads.find(function(lead) {
+      return lead.id === leadId;
+    });
+    $puLeadFirstName.setAttribute('placeholder', currentLead.firstName);
+    $puLeadLastName.setAttribute('placeholder', currentLead.lastName);
+    $puLeadBrandName.setAttribute('placeholder', currentLead.brand);
+    $puLeadStage.setAttribute('placeholder', currentLead.stage);
+    $puLeadId.setAttribute('placeholder', currentLead.id);
+    $leadEditPU.style.display = 'inline-block';
+  }
+})
 
+// POPUP FUNCTIONS
 $closePU.onclick = function () {
   $leadEditPU.style.display = 'none';
-}
-
-window.onclick = function(event) {
-  if (event.target == $leadEditPU) {
-    $leadEditPU.style.display = 'none';
-  }
 }
 
 // Lead Object and Data
@@ -103,10 +115,7 @@ function lead(fname, lname, bname, stage, id) {
   this.lastName = lname;
   this.brand = bname;
   this.stage = stage;
-  var id = id;
-  this.getId = function() {
-    return id;
-  }
+  this.id = id;
 };
 
 var leads = [];
@@ -116,194 +125,6 @@ function tempInitializeLeads() {
   leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations', 'aaa2'));
   leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
 }
-
-// CHART SCRIPT & DATA
-$(document).ready(function() {
-  var title = {
-    text: "Monthly Cohort Performance"
-  };
-  var subtitle = {
-  text: "Eatify"
-  };
-  var xAxis = {
-    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  };
-  var yAxis = {
-    title: {
-      text: "Engagement"
-    },
-    plotLines: [{
-      value: 0,
-      width: 1,
-      color: '#808080'
-    }]
-  };
-  var tooltip = {
-  valueSuffix: '\xB0C'
-  }
-  var legend = {
-  layout: 'vertical',
-  align: 'right',
-  verticalAlign: 'middle',
-  borderWidth: 0
-  };
-  var series =  [
-  {
-     name: "2016Nov",
-     data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2,
-        26.5, 23.3, 18.3, 13.9, 9.6]
-  },
-  {
-     name: '2016Dec',
-     data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8,
-        24.1, 20.1, 14.1, 8.6, 2.5]
-  },
-  {
-     name: '2017Jan',
-     data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6,
-        17.9, 14.3, 9.0, 3.9, 1.0]
-  },
-  {
-     name: "2017Feb",
-     data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0,
-        16.6, 14.2, 10.3, 6.6, 4.8]
-  }
-  ];
-  var json = {};
-  json.title = title;
-  json.subtitle = subtitle;
-  json.xAxis = xAxis;
-  json.yAxis = yAxis;
-  json.tooltip = tooltip;
-  json.legend = legend;
-  json.series = series;
-  $('.cohort-chart').highcharts(json);
-  });
-  $(document).ready(function() {
-  var title = {
-  text: "Customer Acquisition Cost"
-  };
-  var subtitle = {
-  text: "Eatify"
-  };
-  var xAxis = {
-  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  };
-  var yAxis = {
-  title: {
-     text: "Cost ($)"
-  },
-  plotLines: [{
-     value: 0,
-     width: 1,
-     color: '#808080'
-  }]
-  };
-  var tooltip = {
-  valueSuffix: '\xB0C'
-  }
-  var legend = {
-  layout: 'vertical',
-  align: 'right',
-  verticalAlign: 'middle',
-  borderWidth: 0
-  };
-  var series =  [
-  {
-     name: "2016Nov",
-     data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2,
-        26.5, 23.3, 18.3, 13.9, 9.6]
-  },
-  {
-     name: '2016Dec',
-     data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8,
-        24.1, 20.1, 14.1, 8.6, 2.5]
-  },
-  {
-     name: '2017Jan',
-     data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6,
-        17.9, 14.3, 9.0, 3.9, 1.0]
-  },
-  {
-     name: "2017Feb",
-     data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0,
-        16.6, 14.2, 10.3, 6.6, 4.8]
-  }
-  ];
-  var json = {};
-  json.title = title;
-  json.subtitle = subtitle;
-  json.xAxis = xAxis;
-  json.yAxis = yAxis;
-  json.tooltip = tooltip;
-  json.legend = legend;
-  json.series = series;
-  $('.cac-chart').highcharts(json);
-  });
-  $(document).ready(function() {
-  var title = {
-  text: "Monthly Recurring Revenue"
-  };
-  var subtitle = {
-  text: "Eatify"
-  };
-  var xAxis = {
-  categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  };
-  var yAxis = {
-  title: {
-     text: "10K Dollars ($)"
-  },
-  plotLines: [{
-     value: 0,
-     width: 1,
-     color: '#808080'
-  }]
-  };
-  var tooltip = {
-  valueSuffix: '\xB0C'
-  }
-  var legend = {
-  layout: 'vertical',
-  align: 'right',
-  verticalAlign: 'middle',
-  borderWidth: 0
-  };
-  var series =  [
-  {
-     name: "2016Nov",
-     data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2,
-        26.5, 23.3, 18.3, 13.9, 9.6]
-  },
-  {
-     name: '2016Dec',
-     data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8,
-        24.1, 20.1, 14.1, 8.6, 2.5]
-  },
-  {
-     name: '2017Jan',
-     data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6,
-        17.9, 14.3, 9.0, 3.9, 1.0]
-  },
-  {
-     name: "2017Feb",
-     data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0,
-        16.6, 14.2, 10.3, 6.6, 4.8]
-  }
-  ];
-  var json = {};
-  json.title = title;
-  json.subtitle = subtitle;
-  json.xAxis = xAxis;
-  json.yAxis = yAxis;
-  json.tooltip = tooltip;
-  json.legend = legend;
-  json.series = series;
-  $('.mrr-chart').highcharts(json);
-  });
 
 // On run
 tempInitializeLeads();
