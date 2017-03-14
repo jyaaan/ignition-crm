@@ -1,0 +1,45 @@
+.chart-container {
+  width: 100%;
+  height: 400px;
+  display: inline-block;
+}
+
+.cohort-chart {
+  width: 30%;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.mrr-chart {
+  width: 30%;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.cac-chart {
+  width: 30%;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.chart-container #left {
+  float: left;
+}
+
+.chart-container #right {
+  float: right;
+}
+
+#dashboard-container {
+  border: 1px black;
+  margin: 5px;
+}
+
+#details-container {
+  border: 1px black;
+  margin: 5px;
+}
+
+.hidden {
+  display: none;
+}

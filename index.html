@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <link rel="stylesheet" href="default.css" />
+    <link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous" />
+    <title>Ignition CRM</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+            data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1"
+            aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" id="home-button">Ignition CRM?</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li><button type="button" id="lead-button" class="btn btn-default navbar-btn">Leads</button></li>
+            <li><button type="button" class="btn btn-default navbar-btn">Opportunities</button></li>
+            <li><button type="button" class="btn btn-default navbar-btn">Cases</button></li>
+            <li><button type="button" class="btn btn-default navbar-btn">Metrics</button></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <p class="navbar-text">Signed in as John</p>
+            <button type="button" class="btn btn-default navbar-btn">Sign Out</button>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="dashboard-container" class="jumbotron">
+      <!-- landing page dashboard -->
+      <div id="landing-page-dashboard" class="visible">
+        <h2>Dashboard</h2>
+       <div class="row chart-container">
+         <div class="col-md-4 cohort-chart"></div>
+         <div class="col-md-4 cac-chart"></div>
+         <div class="col-md-4 mrr-chart"></div>
+       </div>
+       <div class="row">
+         <div class="col-md-12">
+           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus erat ac fringilla consectetur. Etiam ac arcu id diam congue tristique sed blandit lacus. Ut elementum ac eros eget molestie. Nulla facilisi. Donec consequat urna nisl, sit amet interdum turpis congue vitae. Phasellus malesuada elit et suscipit consequat. Fusce luctus, purus sit amet dictum facilisis, purus tortor tempus quam, in maximus turpis odio nec nisi. Nullam tristique porta facilisis. Vestibulum aliquam ac mi in mattis. Donec pretium fringilla nunc quis finibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc molestie nibh eget lacus gravida vestibulum. Nullam sodales tempor porttitor. Suspendisse ultricies venenatis leo vitae dignissim.
+         </div>
+       </div>
+       <div class="row">
+         <div class="col-md-9"></div>
+         <div class="col-md-2">
+           <button type="button" class="btn btn-primary button-right">What do these mean?</button>
+         </div>
+       </div>
+      </div>
+
+      <!-- lead page dashboard -->
+      <div id="lead-page-dashboard" class="hidden">
+        <h2>Leads</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus erat ac fringilla consectetur. Etiam ac arcu id diam congue tristique sed blandit lacus. Ut elementum ac eros eget molestie. Nulla facilisi. Donec consequat urna nisl, sit amet interdum turpis congue vitae. Phasellus malesuada elit et suscipit consequat. Fusce luctus, purus sit amet dictum facilisis, purus tortor tempus quam, in maximus turpis odio nec nisi. Nullam tristique porta facilisis. Vestibulum aliquam ac mi in mattis. Donec pretium fringilla nunc quis finibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc molestie nibh eget lacus gravida vestibulum. Nullam sodales tempor porttitor. Suspendisse ultricies venenatis leo vitae dignissim.
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-2">
+          <button type="button" class="btn btn-primary button-right">What do these mean?</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="details-container">
+      <!-- landing page details -->
+      <div id="landing-page-details" class="visible">
+        <div class="row">
+          <div class="col-md-4 panel panel default">
+            <div class="panel-heading">Tasks</div>
+            <div class="panel-body">
+              <p>Your currently open tasks.</p>
+            </div>
+            <table class="table">
+              <tr>
+                <th>Task Name</th>
+                <th>Due Date</th>
+              </tr>
+              <tr>
+                <td>Fix mapping</td>
+                <td>3/12/17</td>
+              </tr>
+              <tr>
+                <td>Send cold emails</td>
+                <td>4/1/17</td>
+              </tr>
+            </table>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-primary">Go</button>
+            </div>
+          </div>
+          <div class="col-md-4 panel panel default">
+            <div class="panel-heading">Cases</div>
+            <div class="panel-body">
+              <p>Your currently open cases.</p>
+            </div>
+            <table class="table">
+              <tr>
+                <th>Case Name</th>
+                <th>User</th>
+              </tr>
+              <tr>
+                <td>Swordfish mapped to swords</td>
+                <td>Teddy</td>
+              </tr>
+              <tr>
+                <td>Metrics borked</td>
+                <td>Alex</td>
+              </tr>
+            </table>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-primary">Go</button>
+            </div>
+          </div>
+          <div class="col-md-4 panel panel default">
+            <div class="panel-heading">Quick Reports</div>
+            <div class="panel-body">
+              <p>Your guide to the world of facts</p>
+            </div>
+            <table class="table">
+              <tr>
+                <th>Report Name</th>
+                <th>Type</th>
+              </tr>
+              <tr>
+                <td>Customer Retention</td>
+                <td>Heatmap</td>
+              </tr>
+              <tr>
+                <td>New Recipes by Week</td>
+                <td>Bar chart</td>
+              </tr>
+            </table>
+            <div class="col-md-1">
+              <button type="button" class="btn btn-primary">Go</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leads Details -->
+      <div id="lead-details" class="hidden">
+        HELLO!
+      </div>
+    </div>
+  <div class="copyright">&copy 2017 Eatify, Inc.</div>
+    <script src="main.js"></script>
+  </body>
+</html>
