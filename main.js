@@ -1,5 +1,4 @@
 // TEMP VARIABLES
-var arrTemp = ['a', 'b', 'c'];
 
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
@@ -16,11 +15,29 @@ var createElementArrayFromArray = function (arrTableData, type) {
   var arrRowData = [];
   var tempElem = document.createElement(type);
   for (var datum in arrTableData) {
+    console.log(datum);
     tempElem.textContent = datum;
     arrRowData.push(tempElem);
   }
   return arrRowData;
 };
+var tempElem;
+var createTableElements = function(leads, $table) {
+  var $header = document.createElement('th');
+  var $row;
+  var arrRows = [];
+  $header = appendArrAsChild($header, createElementArrayFromArray(leads[0], 'td'));
+  // $table.appendChild(headers);
+  return $header;
+};
+
+var appendArrAsChild = function ($node, arrElements) {
+  for (var elem in arrElements) {
+    console.log(arrElements[elem]);
+    $node.appendChild(arrElements[elem]);
+  }
+  return $node;
+}
 
 // DOM FUNCTIONS
 var swapVisibility = function($elemToHide, $elemToShow) {
