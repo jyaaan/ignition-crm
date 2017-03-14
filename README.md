@@ -24,7 +24,7 @@ A user can mass import leads via csv
 Email:
 
 A user can send one-off emails via in-app client
-A user can define drip campaigns 
+A user can define drip campaigns
 
 Content Creators
 
@@ -33,3 +33,9 @@ Partners
 Order Management
 
 Metrics
+
+Lead details
+-First name
+-last name
+-brand name
+-stage

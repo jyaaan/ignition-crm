@@ -1,8 +1,9 @@
-
+// TEMP VARIABLES
 
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
+var $leadTable = document.querySelector('#lead-table');
 
 var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
@@ -10,21 +11,88 @@ var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
 
 // FUNCTIONS
+var createElementPropertyArrayFromArray = function (arrTableData, type) {
+  var arrRowData = [];
+  for (var datum in arrTableData) {
+    var tempElem = document.createElement(type);
+    tempElem.textContent = datum;
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+};
+
+var createElementValueArrayFromArray = function (arrTableData, type) {
+  var arrRowData = [];
+  for (var datum in arrTableData) {
+    var tempElem = document.createElement(type);
+    tempElem.textContent = arrTableData[datum];
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+};
+
+var createTableElements = function(leads, $table) {
+  var $header = document.createElement('tr');
+  $header = appendArrAsChild($header, createElementPropertyArrayFromArray(leads[0], 'th'));
+  $table.appendChild($header);
+  for (var lead in leads) {
+    var $row = document.createElement('tr');
+    $row = appendArrAsChild($row, createElementValueArrayFromArray(leads[lead], 'td'));
+    $table.appendChild($row);
+  };
+};
+
+var appendArrAsChild = function ($node, arrElements) {
+  for (var elem in arrElements) {
+    console.log(arrElements[elem]);
+    $node.appendChild(arrElements[elem]);
+  }
+  return $node;
+}
+
+// DOM FUNCTIONS
 var swapVisibility = function($elemToHide, $elemToShow) {
   $elemToHide.classList.add('hidden');
   $elemToShow.classList.remove('hidden');
 };
 
+var clearChildNodes = function($table) {
+  while($table.firstChild) {
+    $table.removeChild($table.firstChild);
+  }
+};
+
+var initializeLeadPage = function() {
+
+};
+
 // UI INTERACTION
 $leadButton.addEventListener('click',function() {
   swapVisibility($landingPageDetails, $leadDetails);
-  swapVisibility($landingPageDashboard, $leadDashboard)
+  swapVisibility($landingPageDashboard, $leadDashboard);
+  initializeLeadPage();
 });
 
 $homeButton.addEventListener('click', function() {
   swapVisibility($leadDetails, $landingPageDetails);
   swapVisibility($leadDashboard, $landingPageDashboard);
 });
+
+// Lead Object and Data
+function lead(fname, lname, bname, stage) {
+  this.firstName = fname;
+  this.lastName = lname;
+  this.brand = bname;
+  this.stage = stage;
+};
+
+var leads = [];
+
+function tempInitializeLeads() {
+  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo'));
+  leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations'));
+  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox'));
+};
 
 // CHART SCRIPT & DATA
 $(document).ready(function() {
@@ -213,3 +281,6 @@ $(document).ready(function() {
   json.series = series;
   $('.mrr-chart').highcharts(json);
   });
+
+// On run
+tempInitializeLeads();
