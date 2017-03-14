@@ -106,6 +106,7 @@ $leadTable.addEventListener('click', function (event) {
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
+  alert($puLeadFirstName.value);
   $leadEditPU.style.display = 'none';
 }
 
