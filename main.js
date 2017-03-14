@@ -1,9 +1,13 @@
 // TEMP VARIABLES
+var $popupTestButton = document.querySelector('#button-popup-test');
 
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
 var $leadTable = document.querySelector('#lead-table');
+
+var $leadEditPU = document.querySelector('#lead-edit-popup');
+var $closePU = document.querySelector('.close');
 
 var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
@@ -19,7 +23,7 @@ var createElementPropertyArrayFromArray = function (arrTableData, type) {
     arrRowData.push(tempElem);
   }
   return arrRowData;
-};
+}
 
 var createElementValueArrayFromArray = function (arrTableData, type) {
   var arrRowData = [];
@@ -29,7 +33,7 @@ var createElementValueArrayFromArray = function (arrTableData, type) {
     arrRowData.push(tempElem);
   }
   return arrRowData;
-};
+}
 
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('tr');
@@ -39,8 +43,8 @@ var createTableElements = function(leads, $table) {
     var $row = document.createElement('tr');
     $row = appendArrAsChild($row, createElementValueArrayFromArray(leads[lead], 'td'));
     $table.appendChild($row);
-  };
-};
+  }
+}
 
 var appendArrAsChild = function ($node, arrElements) {
   for (var elem in arrElements) {
@@ -54,45 +58,64 @@ var appendArrAsChild = function ($node, arrElements) {
 var swapVisibility = function($elemToHide, $elemToShow) {
   $elemToHide.classList.add('hidden');
   $elemToShow.classList.remove('hidden');
-};
+}
 
 var clearChildNodes = function($table) {
   while($table.firstChild) {
     $table.removeChild($table.firstChild);
   }
-};
+}
 
 var initializeLeadPage = function() {
-
-};
+  $leadTable = createTableElements(leads, $leadTable);
+}
 
 // UI INTERACTION
-$leadButton.addEventListener('click',function() {
+$leadButton.addEventListener('click',function () {
   swapVisibility($landingPageDetails, $leadDetails);
   swapVisibility($landingPageDashboard, $leadDashboard);
   initializeLeadPage();
-});
+})
 
-$homeButton.addEventListener('click', function() {
+$homeButton.addEventListener('click', function () {
   swapVisibility($leadDetails, $landingPageDetails);
   swapVisibility($leadDashboard, $landingPageDashboard);
-});
+})
+
+// POPUP FUNCTIONS
+$popupTestButton.onclick = function () {
+  $leadEditPU.style.display = 'inline-block';
+}
+
+$closePU.onclick = function () {
+  $leadEditPU.style.display = 'none';
+}
+
+window.onclick = function(event) {
+  if (event.target == $leadEditPU) {
+    $leadEditPU.style.display = 'none';
+  }
+}
 
 // Lead Object and Data
-function lead(fname, lname, bname, stage) {
+function lead(fname, lname, bname, stage, id) {
   this.firstName = fname;
   this.lastName = lname;
   this.brand = bname;
   this.stage = stage;
+  var id = id;
+  this.getId = function() {
+    return id;
+  }
 };
 
 var leads = [];
 
 function tempInitializeLeads() {
-  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo'));
-  leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations'));
-  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox'));
-};
+  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
+  leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations', 'aaa2'));
+  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
+}
 
 // CHART SCRIPT & DATA
 $(document).ready(function() {
