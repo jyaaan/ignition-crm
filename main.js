@@ -4,10 +4,12 @@
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
 
+var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
+var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
-// FUNCTIONS
 
+// FUNCTIONS
 var swapVisibility = function($elemToHide, $elemToShow) {
   $elemToHide.classList.add('hidden');
   $elemToShow.classList.remove('hidden');
@@ -16,10 +18,12 @@ var swapVisibility = function($elemToHide, $elemToShow) {
 // UI INTERACTION
 $leadButton.addEventListener('click',function() {
   swapVisibility($landingPageDetails, $leadDetails);
+  swapVisibility($landingPageDashboard, $leadDashboard)
 });
 
 $homeButton.addEventListener('click', function() {
   swapVisibility($leadDetails, $landingPageDetails);
+  swapVisibility($leadDashboard, $landingPageDashboard);
 });
 
 // CHART SCRIPT & DATA
