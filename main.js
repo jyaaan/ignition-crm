@@ -32,8 +32,8 @@ var createElementValueArrayFromArray = function (arrTableData, type) {
 };
 
 var createTableElements = function(leads, $table) {
-  var $header = document.createElement('th');
-  $header = appendArrAsChild($header, createElementPropertyArrayFromArray(leads[0], 'td'));
+  var $header = document.createElement('tr');
+  $header = appendArrAsChild($header, createElementPropertyArrayFromArray(leads[0], 'th'));
   $table.appendChild($header);
   for (var lead in leads) {
     var $row = document.createElement('tr');
@@ -91,6 +91,7 @@ var leads = [];
 function tempInitializeLeads() {
   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo'));
   leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations'));
+  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox'));
 };
 
 // CHART SCRIPT & DATA
