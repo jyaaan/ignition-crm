@@ -4,6 +4,7 @@
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
 var $leadTable = document.querySelector('#lead-table');
+var $leadSaveButton = document.querySelector('#lead-edit-save');
 
 var $leadEditPU = document.querySelector('#lead-edit-popup');
 var $closePU = document.querySelector('.close');
@@ -92,16 +93,27 @@ $homeButton.addEventListener('click', function () {
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (typeof leadId !== undefined) {
-    var currentLead = leads.find(function(lead) {
+    editLead = leads.find(function(lead) {
       return lead.id === leadId;
     });
-    $puLeadFirstName.value = currentLead.firstName;
-    $puLeadLastName.value = currentLead.lastName;
-    $puLeadBrandName.value = currentLead.brand;
-    $puLeadStage.value = currentLead.stage;
-    $puLeadId.value = currentLead.id;
+    // define an array outside of this function to hold dom elements
+    // generate dom elements whenever this function is called using for each
+    // save references to these elements for use when saving and closing
+    // modal edit window.
+    $puLeadFirstName.value = editLead.firstName;
+    $puLeadLastName.value = editLead.lastName;
+    $puLeadBrandName.value = editLead.brand;
+    $puLeadStage.value = editLead.stage;
+    $puLeadId.value = editLead.id;
     $leadEditPU.style.display = 'inline-block';
   }
+})
+
+$leadSaveButton.addEventListener('click', function (event) {
+  // need to dynamically crate dom objects in leadTable event
+  // create array which maps dom elements to lead object properties so that
+  // iterating through will be more efficient and scalable to as many
+  // properties as needed.
 })
 
 // POPUP FUNCTIONS
@@ -119,10 +131,11 @@ function lead(fname, lname, bname, stage, id) {
 };
 
 var leads = [];
+var editLead = new lead();
 
 function tempInitializeLeads() {
   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
-  leads.push(new lead('chris', 'hobbs', 'flyking', 'negotiations', 'aaa2'));
+  leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
   leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
 }
 
