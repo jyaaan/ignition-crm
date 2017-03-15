@@ -95,18 +95,17 @@ $leadTable.addEventListener('click', function (event) {
     var currentLead = leads.find(function(lead) {
       return lead.id === leadId;
     });
-    $puLeadFirstName.setAttribute('placeholder', currentLead.firstName);
-    $puLeadLastName.setAttribute('placeholder', currentLead.lastName);
-    $puLeadBrandName.setAttribute('placeholder', currentLead.brand);
-    $puLeadStage.setAttribute('placeholder', currentLead.stage);
-    $puLeadId.setAttribute('placeholder', currentLead.id);
+    $puLeadFirstName.value = currentLead.firstName;
+    $puLeadLastName.value = currentLead.lastName;
+    $puLeadBrandName.value = currentLead.brand;
+    $puLeadStage.value = currentLead.stage;
+    $puLeadId.value = currentLead.id;
     $leadEditPU.style.display = 'inline-block';
   }
 })
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
-  alert($puLeadFirstName.value);
   $leadEditPU.style.display = 'none';
 }
 
