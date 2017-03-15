@@ -70,7 +70,8 @@ var clearChildNodes = function($table) {
 }
 
 var initializeLeadPage = function() {
-  $leadTable = createTableElements(leads, $leadTable);
+  clearChildNodes($leadTable);
+  createTableElements(leads, $leadTable);
 }
 
 var createElementWithClass = function(type, className) {
@@ -130,14 +131,14 @@ $leadSaveButton.addEventListener('click', function (event) {
     inputLead[input.getAttribute('lead-property')].field = input.value;
   })
   if (checkIfChanged(inputLead)) {
-    var masterLead = getMasterLead(inputLead);
-  } else {
-    $leadEditPU.style.display = 'none';
+    leads[getMasterLeadIndexById(inputLead)] = inputLead;
+    initializeLeadPage();
   }
+  $leadEditPU.style.display = 'none';
 })
 
 var checkIfChanged = function(inputLead) {
-  var masterLead = getMasterLead(inputLead);
+  var masterLead = getMasterLeadById(inputLead);
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
       return true;
@@ -146,8 +147,14 @@ var checkIfChanged = function(inputLead) {
   return false;
 }
 
-var getMasterLead = function (inputLead) {
-  leads.find(function (lead) {
+var getMasterLeadById = function (inputLead) {
+  return leads.find(function (lead) {
+    return lead.id.field === inputLead.id.field;
+  })
+}
+
+var getMasterLeadIndexById = function (inputLead) {
+  return leads.findIndex(function (lead) {
     return lead.id.field === inputLead.id.field;
   })
 }
