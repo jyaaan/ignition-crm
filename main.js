@@ -122,20 +122,26 @@ $leadTable.addEventListener('click', function (event) {
 })
 
 $leadSaveButton.addEventListener('click', function (event) {
-  // check if changes were made.
-  // create array of input values.
-  // to do that, look at the lead-edit-details class and iterate through child
+  var inputLead = getLeadInputArray();
+  if (checkIfChanged(inputLead)) {
+    updateMasterLead(inputLead);
+    initializeLeadPage();
+  }
+  $leadEditPU.style.display = 'none';
+})
+
+var getLeadInputArray = function() {
   var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
   var inputLead = new lead();
   $arrLeadInputs.forEach(function (input) {
     inputLead[input.getAttribute('lead-property')].field = input.value;
   })
-  if (checkIfChanged(inputLead)) {
-    leads[getMasterLeadIndexById(inputLead)] = inputLead;
-    initializeLeadPage();
-  }
-  $leadEditPU.style.display = 'none';
-})
+  return inputLead;
+}
+
+var updateMasterLead = function(inputLead) {
+  leads[getMasterLeadIndexById(inputLead)] = inputLead;
+}
 
 var checkIfChanged = function(inputLead) {
   var masterLead = getMasterLeadById(inputLead);
@@ -161,6 +167,13 @@ var getMasterLeadIndexById = function (inputLead) {
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
+  var inputLead = getLeadInputArray();
+  if (checkIfChanged(inputLead)) {
+    var answer = confirm('Save your changes?');
+    if (answer) {
+      updateMasterLead(inputLead);
+    }
+  }
   $leadEditPU.style.display = 'none';
 }
 
