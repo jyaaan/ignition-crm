@@ -42,6 +42,7 @@
       </div>
     </nav>
 
+    <!-- DASHBOARDS -->
     <div id="dashboard-container" class="jumbotron">
       <!-- landing page dashboard -->
       <div id="landing-page-dashboard" class="visible">
@@ -81,6 +82,7 @@
       </div>
     </div>
 
+    <!-- DETAILS -->
     <div id="details-container">
       <!-- landing page details -->
       <div id="landing-page-details" class="visible">
@@ -161,12 +163,50 @@
       <div id="lead-details" class="hidden">
         <div class="panel panel-default">
           <div class="panel-heading">Leads</div>
-          <table id="lead-table">
+          <table class="table table-hover table-bordered" id="lead-table">
           </table>
         </div>
       </div>
     </div>
-  <div class="copyright">&copy 2017 Eatify, Inc.</div>
+
+    <!-- POP UPS -->
+    <div class="popup" id="lead-edit-popup">
+      <div class="popup-content col-xs-10 col-xs-offset-1">
+        <div class="row">
+          <button class="button col-xs-1" id="lead-edit-save">Save</button>
+          <button class="button col-xs-1">Cancel</button>
+          <span class="close col-xs-1">&times;</span>
+        </div>
+        <div class="row">
+          <div class="col-xs-2">
+            <span class="input-group">First Name</span>
+            <input type="text" class="form-control" id="lead-first-name" aria-label="lead-first-name" />
+          </div>
+          <div class="col-xs-2">
+            <span class="input-group">Last Name</span>
+            <input type="text" class="form-control" id="lead-last-name" aria-label="lead-last-name" />
+          </div>
+          <div class="col-xs-2">
+            <span class="input-group">ID</span>
+            <input type="text" class="form-control" id="lead-id" aria-label="lead-id" />
+          </div>
+          <div class="col-xs-2">
+            <span class="input-group">Brand Name</span>
+            <input type="text" class="form-control" id="lead-brand-name" aria-label="lead-brand-name" />
+          </div>
+          <div class="col-xs-2">
+            <span class="input-group">Stage</span>
+            <input type="text" class="form-control" id="lead-stage" aria-label="lead-stage" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="copyright">&copy; 2017 Eatify, Inc.</div>
+
+    <!-- SCRIPTS -->
+    <script src="charts.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
