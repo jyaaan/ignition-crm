@@ -51,7 +51,6 @@ var createTableElements = function(leads, $table) {
 
 var appendArrAsChild = function ($node, arrElements) {
   for (var elem in arrElements) {
-    console.log(arrElements[elem]);
     $node.appendChild(arrElements[elem]);
   }
   return $node;
@@ -172,6 +171,7 @@ $closePU.onclick = function () {
     var answer = confirm('Save your changes?');
     if (answer) {
       updateMasterLead(inputLead);
+      initializeLeadPage();
     }
   }
   $leadEditPU.style.display = 'none';
