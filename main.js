@@ -94,7 +94,7 @@ $homeButton.addEventListener('click', function () {
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (typeof leadId !== undefined) {
-    editLead = leads.find(function(lead) {
+    var editLead = leads.find(function(lead) {
       return lead.id.field === leadId;
     });
     var $popupRow = createElementWithClass('div', 'row');
@@ -105,25 +105,52 @@ $leadTable.addEventListener('click', function (event) {
       $arrElems[0].textContent = prop;
       $arrElems[1] = createElementWithClass('input', 'form-control');
       $arrElems[1].setAttribute('type', 'text');
-      $arrElems[1].setAttribute('id', 'lead-' + prop);
+      $arrElems[1].setAttribute('lead-property', prop);
       $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+      $arrElems[1].classList.add('lead-property-input')
       $arrElems[1].value = editLead[prop].field;
       $arrElems[1].disabled = !editLead[prop].isEditable;
       $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
       $popupRow.appendChild($propertyDiv);
     }
     var $leadPopupDetail = document.querySelector('.lead-edit-details');
+    clearChildNodes($leadPopupDetail);
     $leadPopupDetail.appendChild($popupRow);
     $leadEditPU.style.display = 'inline-block';
   }
 })
 
-// $leadSaveButton.addEventListener('click', function (event) {
-//   // need to dynamically crate dom objects in leadTable event
-//   // create array which maps dom elements to lead object properties so that
-//   // iterating through will be more efficient and scalable to as many
-//   // properties as needed.
-// })
+$leadSaveButton.addEventListener('click', function (event) {
+  // check if changes were made.
+  // create array of input values.
+  // to do that, look at the lead-edit-details class and iterate through child
+  var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
+  var inputLead = new lead();
+  $arrLeadInputs.forEach(function (input) {
+    inputLead[input.getAttribute('lead-property')].field = input.value;
+  })
+  if (checkIfChanged(inputLead)) {
+    var masterLead = getMasterLead(inputLead);
+  } else {
+    $leadEditPU.style.display = 'none';
+  }
+})
+
+var checkIfChanged = function(inputLead) {
+  var masterLead = getMasterLead(inputLead);
+  for (var prop in masterLead) {
+    if (masterLead[prop].field !== inputLead[prop].field) {
+      return true;
+    }
+  }
+  return false;
+}
+
+var getMasterLead = function (inputLead) {
+  leads.find(function (lead) {
+    return lead.id.field === inputLead.id.field;
+  })
+}
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
@@ -131,7 +158,7 @@ $closePU.onclick = function () {
 }
 
 function initializeLeadPopup($element) {
-  $element = clearChildNodes($element);
+  clearChildNodes($element);
 }
 
 // Lead Object and Data
@@ -144,7 +171,6 @@ function lead(fname, lname, bname, stage, id) {
 };
 
 var leads = [];
-var editLead = new lead();
 
 function tempInitializeLeads() {
   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
