@@ -31,7 +31,7 @@ var createElemValArrayLeadId = function (arrTableData, type, leadId) {
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
     tempElem.setAttribute('lead-id', leadId)
-    tempElem.textContent = arrTableData[datum];
+    tempElem.textContent = arrTableData[datum].field;
     arrRowData.push(tempElem);
   }
   return arrRowData;
@@ -43,8 +43,8 @@ var createTableElements = function(leads, $table) {
   $table.appendChild($header);
   for (var lead in leads) {
     var $row = document.createElement('tr');
-    $row.setAttribute('lead-id', leads[lead].id);
-    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id));
+    $row.setAttribute('lead-id', leads[lead].id.field);
+    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id.field));
     $table.appendChild($row);
   }
 }
@@ -95,7 +95,7 @@ $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (typeof leadId !== undefined) {
     editLead = leads.find(function(lead) {
-      return lead.id === leadId;
+      return lead.id.field === leadId;
     });
     var $popupRow = createElementWithClass('div', 'row');
     for (var prop in editLead) {
@@ -107,7 +107,8 @@ $leadTable.addEventListener('click', function (event) {
       $arrElems[1].setAttribute('type', 'text');
       $arrElems[1].setAttribute('id', 'lead-' + prop);
       $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-      $arrElems[1].value = editLead[prop];
+      $arrElems[1].value = editLead[prop].field;
+      $arrElems[1].disabled = !editLead[prop].isEditable;
       $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
       $popupRow.appendChild($propertyDiv);
     }
@@ -135,11 +136,11 @@ function initializeLeadPopup($element) {
 
 // Lead Object and Data
 function lead(fname, lname, bname, stage, id) {
-  this.firstName = fname;
-  this.lastName = lname;
-  this.brand = bname;
-  this.stage = stage;
-  this.id = id;
+  this.firstName = { field: fname, isEditable: true };
+  this.lastName = { field: lname, isEditable: true };
+  this.brand = { field: bname, isEditable: true };
+  this.stage = { field: stage, isEditable: true };
+  this.id = { field: id, isEditable: false };
 };
 
 var leads = [];
