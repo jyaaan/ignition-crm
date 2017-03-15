@@ -1,5 +1,6 @@
 // TEMP VARIABLES
 
+
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
@@ -13,12 +14,6 @@ var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
 var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
-
-var $puLeadFirstName = document.querySelector('#lead-first-name');
-var $puLeadLastName = document.querySelector('#lead-last-name');
-var $puLeadBrandName = document.querySelector('#lead-brand-name');
-var $puLeadId = document.querySelector('#lead-id');
-var $puLeadStage = document.querySelector('#lead-stage');
 
 // FUNCTIONS
 var createElementPropertyArrayFromArray = function (arrTableData, type) {
@@ -78,6 +73,12 @@ var initializeLeadPage = function() {
   $leadTable = createTableElements(leads, $leadTable);
 }
 
+var createElementWithClass = function(type, className) {
+  var $tempElem = document.createElement(type);
+  $tempElem.classList.add(className);
+  return $tempElem;
+}
+
 // UI INTERACTION
 $leadButton.addEventListener('click',function () {
   swapVisibility($landingPageDetails, $leadDetails);
@@ -96,29 +97,40 @@ $leadTable.addEventListener('click', function (event) {
     editLead = leads.find(function(lead) {
       return lead.id === leadId;
     });
-    // define an array outside of this function to hold dom elements
-    // generate dom elements whenever this function is called using for each
-    // save references to these elements for use when saving and closing
-    // modal edit window.
-    $puLeadFirstName.value = editLead.firstName;
-    $puLeadLastName.value = editLead.lastName;
-    $puLeadBrandName.value = editLead.brand;
-    $puLeadStage.value = editLead.stage;
-    $puLeadId.value = editLead.id;
+    var $popupRow = createElementWithClass('div', 'row');
+    for (var prop in editLead) {
+      var $arrElems = [];
+      var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+      $arrElems[0] = createElementWithClass('span', 'input-group');
+      $arrElems[0].textContent = prop;
+      $arrElems[1] = createElementWithClass('input', 'form-control');
+      $arrElems[1].setAttribute('type', 'text');
+      $arrElems[1].setAttribute('id', 'lead-' + prop);
+      $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+      $arrElems[1].value = editLead[prop];
+      $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+      $popupRow.appendChild($propertyDiv);
+    }
+    var $leadPopupDetail = document.querySelector('.lead-edit-details');
+    $leadPopupDetail.appendChild($popupRow);
     $leadEditPU.style.display = 'inline-block';
   }
 })
 
-$leadSaveButton.addEventListener('click', function (event) {
-  // need to dynamically crate dom objects in leadTable event
-  // create array which maps dom elements to lead object properties so that
-  // iterating through will be more efficient and scalable to as many
-  // properties as needed.
-})
+// $leadSaveButton.addEventListener('click', function (event) {
+//   // need to dynamically crate dom objects in leadTable event
+//   // create array which maps dom elements to lead object properties so that
+//   // iterating through will be more efficient and scalable to as many
+//   // properties as needed.
+// })
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
   $leadEditPU.style.display = 'none';
+}
+
+function initializeLeadPopup($element) {
+  $element = clearChildNodes($element);
 }
 
 // Lead Object and Data
