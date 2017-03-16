@@ -1,6 +1,8 @@
-// TEMP VARIABLES
-
-
+// TEMP
+var $filterDropdown = document.querySelector('.filter-dropdown');
+$filterDropdown.addEventListener('click', function(event) {
+  console.log(event);
+})
 // GLOBAL VARS
 
 

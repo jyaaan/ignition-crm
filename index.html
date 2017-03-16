@@ -149,6 +149,29 @@
         <div class="row">
           <button class="button col-xs-2" id="lead-create-button">Create New Lead</button>
         </div>
+        <div class="row ten-px-vspace"></div>
+        <div class="row">
+          <div class="col-xs-2">
+            <input type="text" class="form-control" id="filter-input" disabled="true" />
+          </div>
+          <div class="dropdown filter-dropdown col-xs-1">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+              Filter By
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a href="#">firstName</a></li>
+              <li><a href="#">lastName</a></li>
+              <li><a href="#">brand</a></li>
+              <li><a href="#">stage</a></li>
+              <li><a href="#">id</a></li>
+            </ul>
+          </div>
+          <div class="col-xs-2">
+            <button class="button" id="apply-filter-button">Apply Filter</button>
+          </div>
+        </div>
+        <div class="row ten-px-vspace"></div>
         <div class="row panel panel-default">
           <div class="panel-heading">Leads</div>
           <table class="table" id="lead-table">
@@ -177,6 +200,7 @@
     </div>
 
     <!-- SCRIPTS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="charts.js"></script>
     <script src="main.js"></script>
   </body>

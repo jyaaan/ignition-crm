@@ -68,3 +68,11 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+.float-right {
+  float: right;
+}
+
+.ten-px-vspace {
+  height: 10px;
+}
