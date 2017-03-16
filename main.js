@@ -81,7 +81,7 @@ var createElementWithClass = function(type, className) {
 }
 
 var createLeadForm = function(editLead, $formRow, isEdit = true) {
-  for (var propr in editLead) {
+  for (var prop in editLead) {
     var $arrElems = [];
     var $propertyDiv = createElementWithClass('div', 'col-xs-2');
     $arrElems[0] = createElementWithClass('span', 'input-group');
@@ -98,7 +98,13 @@ var createLeadForm = function(editLead, $formRow, isEdit = true) {
     $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
     $formRow.appendChild($propertyDiv);
   }
+}
 
+var updatePopupForm = function($form) {
+  var $leadPopupDetail = document.querySelector('.lead-edit-details');
+  clearChildNodes($leadPopupDetail);
+  $leadPopupDetail.appendChild($form);
+  $leadEditPU.style.display = 'inline-block';
 }
 
 // UI INTERACTION
@@ -121,10 +127,7 @@ $leadTable.addEventListener('click', function (event) {
     });
     var $popupRow = createElementWithClass('div', 'row');
     createLeadForm(editLead, $popupRow, true);
-    var $leadPopupDetail = document.querySelector('.lead-edit-details');
-    clearChildNodes($leadPopupDetail);
-    $leadPopupDetail.appendChild($popupRow);
-    $leadEditPU.style.display = 'inline-block';
+    updatePopupForm($popupRow);
   }
 })
 
@@ -140,7 +143,9 @@ $leadSaveButton.addEventListener('click', function (event) {
 $leadCreateButton.addEventListener('click', function (event) {
   var newLead = new lead();
   var $popupRow = createElementWithClass('div', 'row');
-  createLeadForm
+  createLeadForm(newLead, $popupRow, false);
+  updatePopupForm($popupRow);
+
 })
 
 var getLeadInputArray = function() {
