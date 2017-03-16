@@ -133,7 +133,12 @@ $leadTable.addEventListener('click', function (event) {
 
 $leadSaveButton.addEventListener('click', function (event) {
   var inputLead = getLeadInputArray();
-  if (checkIfChanged(inputLead)) {
+  if (checkIfNew(inputLead)) {
+    console.log('new lead detected');
+    inputLead = assignNewId(inputLead);
+    addLead(inputLead);
+    initializeLeadPage();
+  } else if (checkIfChanged(inputLead)) {
     updateMasterLead(inputLead);
     initializeLeadPage();
   }
@@ -169,6 +174,23 @@ var checkIfChanged = function(inputLead) {
     }
   }
   return false;
+}
+
+var checkIfNew = function(inputLead) {
+  if (inputLead.id.field === '') {
+    return true;
+  }
+  return false;
+}
+
+var assignNewId = function(lead) {
+  lead.id.field = Math.random().toString(32).substr(2, 9);
+  console.log(lead);
+  return lead;
+}
+
+var addLead = function(lead) {
+  leads.push(lead);
 }
 
 var getMasterLeadById = function (inputLead) {
