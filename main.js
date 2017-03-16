@@ -138,7 +138,6 @@ var createLeadForm = function(editLead, $formRow, isEdit = true) {
     if (isEdit) {
       $arrElems[1].value = editLead[prop].field;
     }
-
     $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
     $formRow.appendChild($propertyDiv);
   }
@@ -158,7 +157,6 @@ var saveForm = function() {
     updateMasterLead(inputLead);
     initializeLeadPage();
   }
-
   $leadEditPU.style.display = 'none';
 }
 
@@ -237,7 +235,7 @@ var updatePopupForm = function($form) {
 var closePopup = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  
+
   if (checkIfChanged(inputLead)) {
     var answer = confirm('Save your changes?');
     if (answer) {
