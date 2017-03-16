@@ -6,6 +6,7 @@ var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
 var $leadTable = document.querySelector('#lead-table');
 var $leadSaveButton = document.querySelector('#lead-edit-save');
+var $leadCreateButton = document.querySelector('#lead-create-button');
 
 var $leadEditPU = document.querySelector('#lead-edit-popup');
 var $closePU = document.querySelector('.close');
@@ -79,6 +80,33 @@ var createElementWithClass = function(type, className) {
   return $tempElem;
 }
 
+var createLeadForm = function(editLead, $formRow, isEdit = true) {
+  for (var prop in editLead) {
+    var $arrElems = [];
+    var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+    $arrElems[0] = createElementWithClass('span', 'input-group');
+    $arrElems[0].textContent = prop;
+    $arrElems[1] = createElementWithClass('input', 'form-control');
+    $arrElems[1].setAttribute('type', 'text');
+    $arrElems[1].setAttribute('lead-property', prop);
+    $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+    $arrElems[1].classList.add('lead-property-input')
+    $arrElems[1].disabled = !editLead[prop].isEditable;
+    if (isEdit) {
+      $arrElems[1].value = editLead[prop].field;
+    }
+    $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+    $formRow.appendChild($propertyDiv);
+  }
+}
+
+var updatePopupForm = function($form) {
+  var $leadPopupDetail = document.querySelector('.lead-edit-details');
+  clearChildNodes($leadPopupDetail);
+  $leadPopupDetail.appendChild($form);
+  $leadEditPU.style.display = 'inline-block';
+}
+
 // UI INTERACTION
 $leadButton.addEventListener('click',function () {
   swapVisibility($landingPageDetails, $leadDetails);
@@ -98,35 +126,31 @@ $leadTable.addEventListener('click', function (event) {
       return lead.id.field === leadId;
     });
     var $popupRow = createElementWithClass('div', 'row');
-    for (var prop in editLead) {
-      var $arrElems = [];
-      var $propertyDiv = createElementWithClass('div', 'col-xs-2');
-      $arrElems[0] = createElementWithClass('span', 'input-group');
-      $arrElems[0].textContent = prop;
-      $arrElems[1] = createElementWithClass('input', 'form-control');
-      $arrElems[1].setAttribute('type', 'text');
-      $arrElems[1].setAttribute('lead-property', prop);
-      $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-      $arrElems[1].classList.add('lead-property-input')
-      $arrElems[1].value = editLead[prop].field;
-      $arrElems[1].disabled = !editLead[prop].isEditable;
-      $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
-      $popupRow.appendChild($propertyDiv);
-    }
-    var $leadPopupDetail = document.querySelector('.lead-edit-details');
-    clearChildNodes($leadPopupDetail);
-    $leadPopupDetail.appendChild($popupRow);
-    $leadEditPU.style.display = 'inline-block';
+    createLeadForm(editLead, $popupRow, true);
+    updatePopupForm($popupRow);
   }
 })
 
 $leadSaveButton.addEventListener('click', function (event) {
   var inputLead = getLeadInputArray();
-  if (checkIfChanged(inputLead)) {
+  if (checkIfNew(inputLead)) {
+    console.log('new lead detected');
+    inputLead = assignNewId(inputLead);
+    addLead(inputLead);
+    initializeLeadPage();
+  } else if (checkIfChanged(inputLead)) {
     updateMasterLead(inputLead);
     initializeLeadPage();
   }
   $leadEditPU.style.display = 'none';
+})
+
+$leadCreateButton.addEventListener('click', function (event) {
+  var newLead = new lead();
+  var $popupRow = createElementWithClass('div', 'row');
+  createLeadForm(newLead, $popupRow, false);
+  updatePopupForm($popupRow);
+
 })
 
 var getLeadInputArray = function() {
@@ -150,6 +174,23 @@ var checkIfChanged = function(inputLead) {
     }
   }
   return false;
+}
+
+var checkIfNew = function(inputLead) {
+  if (inputLead.id.field === '') {
+    return true;
+  }
+  return false;
+}
+
+var assignNewId = function(lead) {
+  lead.id.field = Math.random().toString(32).substr(2, 9);
+  console.log(lead);
+  return lead;
+}
+
+var addLead = function(lead) {
+  leads.push(lead);
 }
 
 var getMasterLeadById = function (inputLead) {
