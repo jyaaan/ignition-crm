@@ -3,6 +3,15 @@ var $filterDropdown = document.querySelector('.filter-dropdown');
 $filterDropdown.addEventListener('click', function(event) {
   console.log(event);
 })
+
+var $dropdownMenu = document.querySelector('#filter-properties');
+$dropdownMenu.addEventListener('click', function(event) {
+  var $dropdownButton = document.querySelector('#dropdown-button');
+  var $filterInput = document.querySelector('#filter-input');
+  $dropdownButton.textContent = event.target.textContent;
+  $filterInput.disabled = false;
+  $filterInput.setAttribute('placeholder', 'Enter value');
+})
 // GLOBAL VARS
 
 
