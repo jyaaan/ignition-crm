@@ -1,16 +1,92 @@
 // TEMP VARIABLES
 
 
-// ELEMENT VARS
+// GLOBAL VARS
+
+
+// UTILITY FUNCTIONS
+var createElementWithClass = function(type, className) {
+  var $tempElem = document.createElement(type);
+
+  $tempElem.classList.add(className);
+  return $tempElem;
+}
+
+var appendArrAsChild = function ($node, arrElements) {
+  for (var elem in arrElements) {
+    $node.appendChild(arrElements[elem]);
+  }
+  return $node;
+}
+
+var clearChildNodes = function($table) {
+  while($table.firstChild) {
+    $table.removeChild($table.firstChild);
+  }
+}
+
+var swapVisibility = function($elemToHide, $elemToShow) {
+  $elemToHide.classList.add('hidden');
+  $elemToShow.classList.remove('hidden');
+}
+
+// EVENT LISTENERS AND VARIABLES
+var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
+var $landingPageDetails = document.querySelector('#landing-page-details');
+var $leadDashboard = document.querySelector('#lead-page-dashboard');
+var $leadDetails = document.querySelector('#lead-details');
+
+var $leadButton = document.querySelector('#lead-button');
+$leadButton.addEventListener('click',function () {
+  swapVisibility($landingPageDetails, $leadDetails);
+  swapVisibility($landingPageDashboard, $leadDashboard);
+  initializeLeadPage();
+})
+
+var $homeButton = document.querySelector('#home-button');
+$homeButton.addEventListener('click', function () {
+  swapVisibility($leadDetails, $landingPageDetails);
+  swapVisibility($leadDashboard, $landingPageDashboard);
+})
+
+var $leadTable = document.querySelector('#lead-table');
+$leadTable.addEventListener('click', function (event) {
+  var leadId = event.target.getAttribute('lead-id');
+
+  if (typeof leadId !== undefined) {
+    var editLead = leads.find(function(lead) {
+      return lead.id.field === leadId;
+    });
+    var $popupRow = createElementWithClass('div', 'row');
+    createLeadForm(editLead, $popupRow, true);
+    updatePopupForm($popupRow);
+  }
+})
+
 var $leadSaveButton = document.querySelector('#lead-edit-save');
+$leadSaveButton.addEventListener('click', function () {
+  saveForm();
+})
+
 var $leadCreateButton = document.querySelector('#lead-create-button');
+$leadCreateButton.addEventListener('click', function () {
+  createLead();
+})
 
 var $closePU = document.querySelector('.close');
+$closePU.addEventListener('click', function() {
+  closePopup();
+})
 
+// LEAD TABLE FUNCTIONS
+var initializeLeadPage = function() {
+  clearChildNodes($leadTable);
+  createTableElements(leads, $leadTable);
+}
 
-// FUNCTIONS
 var createFormProperties = function (arrTableData, type) {
   var arrRowData = [];
+
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
     tempElem.textContent = datum;
@@ -21,6 +97,7 @@ var createFormProperties = function (arrTableData, type) {
 
 var populateFormData = function (arrTableData, type, leadId) {
   var arrRowData = [];
+
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
     tempElem.setAttribute('lead-id', leadId)
@@ -32,8 +109,10 @@ var populateFormData = function (arrTableData, type, leadId) {
 
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('tr');
+
   $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
   $table.appendChild($header);
+
   for (var lead in leads) {
     var $row = document.createElement('tr');
     $row.setAttribute('lead-id', leads[lead].id.field);
@@ -42,41 +121,11 @@ var createTableElements = function(leads, $table) {
   }
 }
 
-var appendArrAsChild = function ($node, arrElements) {
-  for (var elem in arrElements) {
-    $node.appendChild(arrElements[elem]);
-  }
-  return $node;
-}
-
-// DOM FUNCTIONS
-var swapVisibility = function($elemToHide, $elemToShow) {
-  $elemToHide.classList.add('hidden');
-  $elemToShow.classList.remove('hidden');
-}
-
-var clearChildNodes = function($table) {
-  while($table.firstChild) {
-    $table.removeChild($table.firstChild);
-  }
-}
-
-var $leadTable = document.querySelector('#lead-table');
-var initializeLeadPage = function() {
-  clearChildNodes($leadTable);
-  createTableElements(leads, $leadTable);
-}
-
-var createElementWithClass = function(type, className) {
-  var $tempElem = document.createElement(type);
-  $tempElem.classList.add(className);
-  return $tempElem;
-}
-
 var createLeadForm = function(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
     var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+
     $arrElems[0] = createElementWithClass('span', 'input-group');
     $arrElems[0].textContent = prop;
     $arrElems[1] = createElementWithClass('input', 'form-control');
@@ -85,57 +134,21 @@ var createLeadForm = function(editLead, $formRow, isEdit = true) {
     $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
     $arrElems[1].classList.add('lead-property-input')
     $arrElems[1].disabled = !editLead[prop].isEditable;
+
     if (isEdit) {
       $arrElems[1].value = editLead[prop].field;
     }
+
     $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
     $formRow.appendChild($propertyDiv);
   }
 }
 
-var updatePopupForm = function($form) {
-  var $leadPopupDetail = document.querySelector('.lead-edit-details');
-  var $leadEditPU = document.querySelector('#lead-edit-popup');
-  clearChildNodes($leadPopupDetail);
-  $leadPopupDetail.appendChild($form);
-  $leadEditPU.style.display = 'inline-block';
-}
-
-// UI INTERACTION
-var $leadButton = document.querySelector('#lead-button');
-var $homeButton = document.querySelector('#home-button');
-
-var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
-var $landingPageDetails = document.querySelector('#landing-page-details');
-var $leadDashboard = document.querySelector('#lead-page-dashboard');
-var $leadDetails = document.querySelector('#lead-details');
-
-$leadButton.addEventListener('click',function () {
-  swapVisibility($landingPageDetails, $leadDetails);
-  swapVisibility($landingPageDashboard, $leadDashboard);
-  initializeLeadPage();
-})
-
-$homeButton.addEventListener('click', function () {
-  swapVisibility($leadDetails, $landingPageDetails);
-  swapVisibility($leadDashboard, $landingPageDashboard);
-})
-
-$leadTable.addEventListener('click', function (event) {
-  var leadId = event.target.getAttribute('lead-id');
-  if (typeof leadId !== undefined) {
-    var editLead = leads.find(function(lead) {
-      return lead.id.field === leadId;
-    });
-    var $popupRow = createElementWithClass('div', 'row');
-    createLeadForm(editLead, $popupRow, true);
-    updatePopupForm($popupRow);
-  }
-})
-
-$leadSaveButton.addEventListener('click', function (event) {
+// LEAD DATA FUNCTIONS
+var saveForm = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
+
   if (checkIfNew(inputLead)) {
     console.log('new lead detected');
     inputLead = assignNewId(inputLead);
@@ -145,20 +158,22 @@ $leadSaveButton.addEventListener('click', function (event) {
     updateMasterLead(inputLead);
     initializeLeadPage();
   }
-  $leadEditPU.style.display = 'none';
-})
 
-$leadCreateButton.addEventListener('click', function (event) {
+  $leadEditPU.style.display = 'none';
+}
+
+var createLead = function() {
   var newLead = new lead();
   var $popupRow = createElementWithClass('div', 'row');
+
   createLeadForm(newLead, $popupRow, false);
   updatePopupForm($popupRow);
-
-})
+}
 
 var getLeadInputArray = function() {
   var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
   var inputLead = new lead();
+
   $arrLeadInputs.forEach(function (input) {
     inputLead[input.getAttribute('lead-property')].field = input.value;
   })
@@ -171,6 +186,7 @@ var updateMasterLead = function(inputLead) {
 
 var checkIfChanged = function(inputLead) {
   var masterLead = getMasterLeadById(inputLead);
+
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
       return true;
@@ -209,9 +225,19 @@ var getMasterLeadIndexById = function (inputLead) {
 }
 
 // POPUP FUNCTIONS
-$closePU.addEventListener('click', function(event) {
+var updatePopupForm = function($form) {
+  var $leadPopupDetail = document.querySelector('.lead-edit-details');
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
+
+  clearChildNodes($leadPopupDetail);
+  $leadPopupDetail.appendChild($form);
+  $leadEditPU.style.display = 'inline-block';
+}
+
+var closePopup = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
+  
   if (checkIfChanged(inputLead)) {
     var answer = confirm('Save your changes?');
     if (answer) {
@@ -220,8 +246,7 @@ $closePU.addEventListener('click', function(event) {
     }
   }
   $leadEditPU.style.display = 'none';
-})
-
+}
 // Lead Object and Data
 function lead(fname, lname, bname, stage, id) {
   this.firstName = { field: fname, isEditable: true };
