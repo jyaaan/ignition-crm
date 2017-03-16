@@ -59,6 +59,7 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+  margin: 0;
 }
 
 .close:hover,
