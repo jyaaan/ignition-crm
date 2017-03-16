@@ -1,5 +1,6 @@
 // TEMP VARIABLES
 
+
 // ELEMENT VARS
 var $leadButton = document.querySelector('#lead-button');
 var $homeButton = document.querySelector('#home-button');
@@ -13,12 +14,6 @@ var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
 var $landingPageDetails = document.querySelector('#landing-page-details');
 var $leadDashboard = document.querySelector('#lead-page-dashboard');
 var $leadDetails = document.querySelector('#lead-details');
-
-var $puLeadFirstName = document.querySelector('#lead-first-name');
-var $puLeadLastName = document.querySelector('#lead-last-name');
-var $puLeadBrandName = document.querySelector('#lead-brand-name');
-var $puLeadId = document.querySelector('#lead-id');
-var $puLeadStage = document.querySelector('#lead-stage');
 
 // FUNCTIONS
 var createElementPropertyArrayFromArray = function (arrTableData, type) {
@@ -36,7 +31,7 @@ var createElemValArrayLeadId = function (arrTableData, type, leadId) {
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
     tempElem.setAttribute('lead-id', leadId)
-    tempElem.textContent = arrTableData[datum];
+    tempElem.textContent = arrTableData[datum].field;
     arrRowData.push(tempElem);
   }
   return arrRowData;
@@ -48,15 +43,14 @@ var createTableElements = function(leads, $table) {
   $table.appendChild($header);
   for (var lead in leads) {
     var $row = document.createElement('tr');
-    $row.setAttribute('lead-id', leads[lead].id);
-    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id));
+    $row.setAttribute('lead-id', leads[lead].id.field);
+    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id.field));
     $table.appendChild($row);
   }
 }
 
 var appendArrAsChild = function ($node, arrElements) {
   for (var elem in arrElements) {
-    console.log(arrElements[elem]);
     $node.appendChild(arrElements[elem]);
   }
   return $node;
@@ -75,7 +69,14 @@ var clearChildNodes = function($table) {
 }
 
 var initializeLeadPage = function() {
-  $leadTable = createTableElements(leads, $leadTable);
+  clearChildNodes($leadTable);
+  createTableElements(leads, $leadTable);
+}
+
+var createElementWithClass = function(type, className) {
+  var $tempElem = document.createElement(type);
+  $tempElem.classList.add(className);
+  return $tempElem;
 }
 
 // UI INTERACTION
@@ -93,45 +94,103 @@ $homeButton.addEventListener('click', function () {
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (typeof leadId !== undefined) {
-    editLead = leads.find(function(lead) {
-      return lead.id === leadId;
+    var editLead = leads.find(function(lead) {
+      return lead.id.field === leadId;
     });
-    // define an array outside of this function to hold dom elements
-    // generate dom elements whenever this function is called using for each
-    // save references to these elements for use when saving and closing
-    // modal edit window.
-    $puLeadFirstName.value = editLead.firstName;
-    $puLeadLastName.value = editLead.lastName;
-    $puLeadBrandName.value = editLead.brand;
-    $puLeadStage.value = editLead.stage;
-    $puLeadId.value = editLead.id;
+    var $popupRow = createElementWithClass('div', 'row');
+    for (var prop in editLead) {
+      var $arrElems = [];
+      var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+      $arrElems[0] = createElementWithClass('span', 'input-group');
+      $arrElems[0].textContent = prop;
+      $arrElems[1] = createElementWithClass('input', 'form-control');
+      $arrElems[1].setAttribute('type', 'text');
+      $arrElems[1].setAttribute('lead-property', prop);
+      $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+      $arrElems[1].classList.add('lead-property-input')
+      $arrElems[1].value = editLead[prop].field;
+      $arrElems[1].disabled = !editLead[prop].isEditable;
+      $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+      $popupRow.appendChild($propertyDiv);
+    }
+    var $leadPopupDetail = document.querySelector('.lead-edit-details');
+    clearChildNodes($leadPopupDetail);
+    $leadPopupDetail.appendChild($popupRow);
     $leadEditPU.style.display = 'inline-block';
   }
 })
 
 $leadSaveButton.addEventListener('click', function (event) {
-  // need to dynamically crate dom objects in leadTable event
-  // create array which maps dom elements to lead object properties so that
-  // iterating through will be more efficient and scalable to as many
-  // properties as needed.
+  var inputLead = getLeadInputArray();
+  if (checkIfChanged(inputLead)) {
+    updateMasterLead(inputLead);
+    initializeLeadPage();
+  }
+  $leadEditPU.style.display = 'none';
 })
+
+var getLeadInputArray = function() {
+  var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
+  var inputLead = new lead();
+  $arrLeadInputs.forEach(function (input) {
+    inputLead[input.getAttribute('lead-property')].field = input.value;
+  })
+  return inputLead;
+}
+
+var updateMasterLead = function(inputLead) {
+  leads[getMasterLeadIndexById(inputLead)] = inputLead;
+}
+
+var checkIfChanged = function(inputLead) {
+  var masterLead = getMasterLeadById(inputLead);
+  for (var prop in masterLead) {
+    if (masterLead[prop].field !== inputLead[prop].field) {
+      return true;
+    }
+  }
+  return false;
+}
+
+var getMasterLeadById = function (inputLead) {
+  return leads.find(function (lead) {
+    return lead.id.field === inputLead.id.field;
+  })
+}
+
+var getMasterLeadIndexById = function (inputLead) {
+  return leads.findIndex(function (lead) {
+    return lead.id.field === inputLead.id.field;
+  })
+}
 
 // POPUP FUNCTIONS
 $closePU.onclick = function () {
+  var inputLead = getLeadInputArray();
+  if (checkIfChanged(inputLead)) {
+    var answer = confirm('Save your changes?');
+    if (answer) {
+      updateMasterLead(inputLead);
+      initializeLeadPage();
+    }
+  }
   $leadEditPU.style.display = 'none';
+}
+
+function initializeLeadPopup($element) {
+  clearChildNodes($element);
 }
 
 // Lead Object and Data
 function lead(fname, lname, bname, stage, id) {
-  this.firstName = fname;
-  this.lastName = lname;
-  this.brand = bname;
-  this.stage = stage;
-  this.id = id;
+  this.firstName = { field: fname, isEditable: true };
+  this.lastName = { field: lname, isEditable: true };
+  this.brand = { field: bname, isEditable: true };
+  this.stage = { field: stage, isEditable: true };
+  this.id = { field: id, isEditable: false };
 };
 
 var leads = [];
-var editLead = new lead();
 
 function tempInitializeLeads() {
   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
