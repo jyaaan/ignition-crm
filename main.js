@@ -2,22 +2,14 @@
 
 
 // ELEMENT VARS
-var $leadButton = document.querySelector('#lead-button');
-var $homeButton = document.querySelector('#home-button');
-var $leadTable = document.querySelector('#lead-table');
 var $leadSaveButton = document.querySelector('#lead-edit-save');
 var $leadCreateButton = document.querySelector('#lead-create-button');
 
-var $leadEditPU = document.querySelector('#lead-edit-popup');
 var $closePU = document.querySelector('.close');
 
-var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
-var $landingPageDetails = document.querySelector('#landing-page-details');
-var $leadDashboard = document.querySelector('#lead-page-dashboard');
-var $leadDetails = document.querySelector('#lead-details');
 
 // FUNCTIONS
-var createElementPropertyArrayFromArray = function (arrTableData, type) {
+var createFormProperties = function (arrTableData, type) {
   var arrRowData = [];
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
@@ -27,7 +19,7 @@ var createElementPropertyArrayFromArray = function (arrTableData, type) {
   return arrRowData;
 }
 
-var createElemValArrayLeadId = function (arrTableData, type, leadId) {
+var populateFormData = function (arrTableData, type, leadId) {
   var arrRowData = [];
   for (var datum in arrTableData) {
     var tempElem = document.createElement(type);
@@ -40,12 +32,12 @@ var createElemValArrayLeadId = function (arrTableData, type, leadId) {
 
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('tr');
-  $header = appendArrAsChild($header, createElementPropertyArrayFromArray(leads[0], 'th'));
+  $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
   $table.appendChild($header);
   for (var lead in leads) {
     var $row = document.createElement('tr');
     $row.setAttribute('lead-id', leads[lead].id.field);
-    $row = appendArrAsChild($row, createElemValArrayLeadId(leads[lead], 'td', leads[lead].id.field));
+    $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
     $table.appendChild($row);
   }
 }
@@ -69,6 +61,7 @@ var clearChildNodes = function($table) {
   }
 }
 
+var $leadTable = document.querySelector('#lead-table');
 var initializeLeadPage = function() {
   clearChildNodes($leadTable);
   createTableElements(leads, $leadTable);
@@ -102,12 +95,21 @@ var createLeadForm = function(editLead, $formRow, isEdit = true) {
 
 var updatePopupForm = function($form) {
   var $leadPopupDetail = document.querySelector('.lead-edit-details');
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
   clearChildNodes($leadPopupDetail);
   $leadPopupDetail.appendChild($form);
   $leadEditPU.style.display = 'inline-block';
 }
 
 // UI INTERACTION
+var $leadButton = document.querySelector('#lead-button');
+var $homeButton = document.querySelector('#home-button');
+
+var $landingPageDashboard = document.querySelector('#landing-page-dashboard');
+var $landingPageDetails = document.querySelector('#landing-page-details');
+var $leadDashboard = document.querySelector('#lead-page-dashboard');
+var $leadDetails = document.querySelector('#lead-details');
+
 $leadButton.addEventListener('click',function () {
   swapVisibility($landingPageDetails, $leadDetails);
   swapVisibility($landingPageDashboard, $leadDashboard);
@@ -133,6 +135,7 @@ $leadTable.addEventListener('click', function (event) {
 
 $leadSaveButton.addEventListener('click', function (event) {
   var inputLead = getLeadInputArray();
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
   if (checkIfNew(inputLead)) {
     console.log('new lead detected');
     inputLead = assignNewId(inputLead);
@@ -206,8 +209,9 @@ var getMasterLeadIndexById = function (inputLead) {
 }
 
 // POPUP FUNCTIONS
-$closePU.onclick = function () {
+$closePU.addEventListener('click', function(event) {
   var inputLead = getLeadInputArray();
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
   if (checkIfChanged(inputLead)) {
     var answer = confirm('Save your changes?');
     if (answer) {
@@ -216,11 +220,7 @@ $closePU.onclick = function () {
     }
   }
   $leadEditPU.style.display = 'none';
-}
-
-function initializeLeadPopup($element) {
-  clearChildNodes($element);
-}
+})
 
 // Lead Object and Data
 function lead(fname, lname, bname, stage, id) {
