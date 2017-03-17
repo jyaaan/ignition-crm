@@ -51,14 +51,23 @@ $homeButton.addEventListener('click', function () {
 var $leadTable = document.querySelector('#lead-table');
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
-
-  if (typeof leadId !== undefined) {
+  console.log(leadId);
+  if (leadId !== null) {
     var editLead = leads.find(function(lead) {
       return lead.id.field === leadId;
     });
     var $popupRow = createElementWithClass('div', 'row');
     createLeadForm(editLead, $popupRow, true);
     updatePopupForm($popupRow);
+  } else {
+    var checkboxId = event.target.getAttribute('checkbox-id');
+    if (checkboxId == 'header') {
+      document.querySelectorAll('.table-checkbox').forEach(function (box) {
+        box.checked = event.target.checked;
+      })
+    } else {
+
+    }
   }
 })
 
@@ -160,11 +169,13 @@ var populateFormData = function (arrTableData, type, leadId) {
   return arrRowData;
 }
 
-var createCheckbox = function(type, leadId = '') {
+var createCheckbox = function(type, leadId) {
   var $type = document.createElement(type);
   var $checkBox = document.createElement('input');
   $checkBox.setAttribute('value', '');
   $checkBox.setAttribute('type', 'checkbox');
+  $checkBox.setAttribute('checkbox-id', leadId);
+  $checkBox.classList.add('table-checkbox');
   $type.appendChild($checkBox);
   return $type;
 }
@@ -172,7 +183,7 @@ var createCheckbox = function(type, leadId = '') {
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('tr');
 
-  $header.appendChild(createCheckbox('th'));
+  $header.appendChild(createCheckbox('th', 'header'));
   $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
 
   $table.appendChild($header);
