@@ -1,5 +1,4 @@
-// TEMP VARIABLES
-
+// TEMP
 
 // GLOBAL VARS
 
@@ -78,10 +77,40 @@ $closePU.addEventListener('click', function() {
   closePopup();
 })
 
+var $dropdownMenu = document.querySelector('#filter-properties');
+$dropdownMenu.addEventListener('click', function(event) {
+  var $dropdownButton = document.querySelector('#dropdown-button');
+  var $filterInput = document.querySelector('#filter-input');
+
+  $dropdownButton.textContent = event.target.textContent;
+  $dropdownButton.setAttribute('filter-ready', 'true');
+  $filterInput.disabled = false;
+  $filterInput.setAttribute('placeholder', 'Enter value');
+  $applyFilterButton.disabled = false;
+})
+
+var $applyFilterButton = document.querySelector('#apply-filter-button');
+$applyFilterButton.addEventListener('click', function() {
+  var $dropdownButton = document.querySelector('#dropdown-button');
+  var $filterInput = document.querySelector('#filter-input');
+  var filteredLeads = getFilteredLeads($dropdownButton.textContent,
+    $filterInput.value, leads);
+
+  clearChildNodes($leadTable);
+  createTableElements(filteredLeads, $leadTable);
+})
+
+var $resetFilterButton = document.querySelector('#filter-reset-button');
+$resetFilterButton.addEventListener('click', function () {
+  initializeLeadPage();
+})
+
+
 // LEAD TABLE FUNCTIONS
 var initializeLeadPage = function() {
   clearChildNodes($leadTable);
   createTableElements(leads, $leadTable);
+  resetFilter();
 }
 
 var createFormProperties = function (arrTableData, type) {
@@ -143,13 +172,20 @@ var createLeadForm = function(editLead, $formRow, isEdit = true) {
   }
 }
 
+var resetFilter = function() {
+  var $dropdownButton = document.querySelector('#dropdown-button');
+  var $filterInput = document.querySelector('#filter-input');
+  $applyFilterButton.disabled = true;
+  $filterInput.value = '';
+  $filterInput.disabled = true;
+  $dropdownButton.textContent = 'Filter By';
+}
 // LEAD DATA FUNCTIONS
 var saveForm = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
 
   if (checkIfNew(inputLead)) {
-    console.log('new lead detected');
     inputLead = assignNewId(inputLead);
     addLead(inputLead);
     initializeLeadPage();
@@ -202,7 +238,6 @@ var checkIfNew = function(inputLead) {
 
 var assignNewId = function(lead) {
   lead.id.field = Math.random().toString(32).substr(2, 9);
-  console.log(lead);
   return lead;
 }
 
@@ -220,6 +255,17 @@ var getMasterLeadIndexById = function (inputLead) {
   return leads.findIndex(function (lead) {
     return lead.id.field === inputLead.id.field;
   })
+}
+
+var getFilteredLeads = function(filterProperty, filterValue, masterLeads) {
+  var filteredLeads = [];
+
+  masterLeads.forEach(function (lead) {
+    if (lead[filterProperty].field == filterValue) {
+      filteredLeads.push(lead);
+    }
+  })
+  return filteredLeads;
 }
 
 // POPUP FUNCTIONS
