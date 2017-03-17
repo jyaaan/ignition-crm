@@ -51,7 +51,6 @@ $homeButton.addEventListener('click', function () {
 var $leadTable = document.querySelector('#lead-table');
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
-  console.log(leadId);
   if (leadId !== null) {
     var editLead = leads.find(function(lead) {
       return lead.id.field === leadId;
@@ -60,16 +59,24 @@ $leadTable.addEventListener('click', function (event) {
     createLeadForm(editLead, $popupRow, true);
     updatePopupForm($popupRow);
   } else {
-    var checkboxId = event.target.getAttribute('checkbox-id');
-    if (checkboxId == 'header') {
+    if (event.target.getAttribute('checkbox-id') == 'header') {
       document.querySelectorAll('.table-checkbox').forEach(function (box) {
         box.checked = event.target.checked;
       })
-    } else {
-
     }
+    document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
   }
 })
+
+var anyAreChecked = function() {
+  var isChecked = false;
+  document.querySelectorAll('.table-checkbox').forEach(function (box) {
+    if (box.checked) {
+      isChecked = true;
+    }
+  })
+  return isChecked;
+}
 
 var $leadSaveButton = document.querySelector('#lead-edit-save');
 $leadSaveButton.addEventListener('click', function () {
@@ -172,7 +179,7 @@ var populateFormData = function (arrTableData, type, leadId) {
 var createCheckbox = function(type, leadId) {
   var $type = document.createElement(type);
   var $checkBox = document.createElement('input');
-  $checkBox.setAttribute('value', '');
+  $checkBox.checked = false;
   $checkBox.setAttribute('type', 'checkbox');
   $checkBox.setAttribute('checkbox-id', leadId);
   $checkBox.classList.add('table-checkbox');
