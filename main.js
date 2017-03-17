@@ -160,14 +160,26 @@ var populateFormData = function (arrTableData, type, leadId) {
   return arrRowData;
 }
 
+var createCheckbox = function(type, leadId = '') {
+  var $type = document.createElement(type);
+  var $checkBox = document.createElement('input');
+  $checkBox.setAttribute('value', '');
+  $checkBox.setAttribute('type', 'checkbox');
+  $type.appendChild($checkBox);
+  return $type;
+}
+
 var createTableElements = function(leads, $table) {
   var $header = document.createElement('tr');
 
+  $header.appendChild(createCheckbox('th'));
   $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
+
   $table.appendChild($header);
 
   for (var lead in leads) {
     var $row = document.createElement('tr');
+    $row.appendChild(createCheckbox('td'));
     $row.setAttribute('lead-id', leads[lead].id.field);
     $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
     $table.appendChild($row);
