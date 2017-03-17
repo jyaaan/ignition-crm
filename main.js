@@ -78,6 +78,26 @@ var anyAreChecked = function() {
   return isChecked;
 }
 
+var $massEditButton = document.querySelector('#mass-edit-button');
+$massEditButton.addEventListener('click', function () {
+  var checkedLeadIds = [];
+  document.querySelectorAll('.table-checkbox').forEach(function (box) {
+    if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
+      checkedLeadIds.push(box.getAttribute('checkbox-id'));
+    }
+  })
+  getLeadArrayById(leads, checkedLeadIds);
+})
+
+var getLeadArrayById = function(masterLeads, arrId) {
+  var matchLeads = [];
+  arrId.forEach(function (id) {
+    console.log(id);
+    matchLeads.push(getMasterLeadById(masterLeads, id));
+  })
+  console.log(matchLeads);
+}
+
 var $leadSaveButton = document.querySelector('#lead-edit-save');
 $leadSaveButton.addEventListener('click', function () {
   saveForm();
@@ -197,7 +217,7 @@ var createTableElements = function(leads, $table) {
 
   for (var lead in leads) {
     var $row = document.createElement('tr');
-    $row.appendChild(createCheckbox('td'));
+    $row.appendChild(createCheckbox('td', leads[lead].id.field));
     $row.setAttribute('lead-id', leads[lead].id.field);
     $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
     $table.appendChild($row);
@@ -269,11 +289,11 @@ var getLeadInputArray = function() {
 }
 
 var updateMasterLead = function(inputLead) {
-  leads[getMasterLeadIndexById(inputLead)] = inputLead;
+  leads[getMasterLeadIndexById(leads, inputLead.field.id)] = inputLead;
 }
 
 var checkIfChanged = function(inputLead) {
-  var masterLead = getMasterLeadById(inputLead);
+  var masterLead = getMasterLeadById(leads, inputLead.field.id);
 
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
@@ -299,15 +319,15 @@ var addLead = function(lead) {
   leads.push(lead);
 }
 
-var getMasterLeadById = function (inputLead) {
-  return leads.find(function (lead) {
-    return lead.id.field === inputLead.id.field;
+var getMasterLeadById = function (masterLeads, leadId) {
+  return masterLeads.find(function (lead) {
+    return lead.id.field === leadId;
   })
 }
 
-var getMasterLeadIndexById = function (inputLead) {
-  return leads.findIndex(function (lead) {
-    return lead.id.field === inputLead.id.field;
+var getMasterLeadIndexById = function (masterLeads, leadId) {
+  return masterLeads.findIndex(function (lead) {
+    return lead.id.field === leadId;
   })
 }
 
