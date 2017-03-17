@@ -302,6 +302,7 @@ var createLeadsFromCSV = function(csvData) {
     for (var j = 0; j < csvData[i].length; j++) {
       tempLead[csvData[0][j]].field = csvData[i][j];
     }
+    tempLead = assignNewId(tempLead);
     importLeads.push(tempLead);
   }
   return importLeads;
