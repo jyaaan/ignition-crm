@@ -86,16 +86,42 @@ $massEditButton.addEventListener('click', function () {
       checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
   })
-  getLeadArrayById(leads, checkedLeadIds);
+  var editLeads = getLeadArrayById(leads, checkedLeadIds);
+  createMassEditLead(editLeads);
 })
+
+var createMassEditLead = function(editLeads) {
+  var leadProperties = [];
+  var massLead = new lead();
+  for (var prop in editLeads[0]) {
+    leadProperties.push(prop);
+    // extract all values o
+    var arrPropValues = [];
+    editLeads.forEach(function (lead) {
+      arrPropValues.push(lead[prop].field);
+    })
+
+    console.log(arrPropValues);
+    console.log(arrPropValues.every(areArrayValuesIdential));
+
+  }
+
+}
+
+var areArrayValuesIdential = function(el, index, arr) {
+  if (index === 0) {
+    return true;
+  } else {
+    return (el === arr[index - 1]);
+  }
+}
 
 var getLeadArrayById = function(masterLeads, arrId) {
   var matchLeads = [];
   arrId.forEach(function (id) {
-    console.log(id);
     matchLeads.push(getMasterLeadById(masterLeads, id));
   })
-  console.log(matchLeads);
+  return matchLeads;
 }
 
 var $leadSaveButton = document.querySelector('#lead-edit-save');
@@ -143,7 +169,6 @@ $resetFilterButton.addEventListener('click', function () {
 
 var $fileUpload = document.querySelector('#csv-upload');
 $fileUpload.addEventListener('change', function (event) {
-  console.log('upload triggered');
   var data = null;
   var file = event.target.files[0];
   var reader = new FileReader();
@@ -163,7 +188,6 @@ $fileUpload.addEventListener('change', function (event) {
       alert('Unable to read' + ' ' + file.fileName);
     }
   }
-  // console.log(newLeads);
 })
 
 // LEAD TABLE FUNCTIONS
@@ -289,11 +313,11 @@ var getLeadInputArray = function() {
 }
 
 var updateMasterLead = function(inputLead) {
-  leads[getMasterLeadIndexById(leads, inputLead.field.id)] = inputLead;
+  leads[getMasterLeadIndexById(leads, inputLead.id.field)] = inputLead;
 }
 
 var checkIfChanged = function(inputLead) {
-  var masterLead = getMasterLeadById(leads, inputLead.field.id);
+  var masterLead = getMasterLeadById(leads, inputLead.id.field);
 
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
