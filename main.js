@@ -78,37 +78,39 @@ var anyAreChecked = function() {
   return isChecked;
 }
 
+var checkedLeadIds = [];
 var $massEditButton = document.querySelector('#mass-edit-button');
 $massEditButton.addEventListener('click', function () {
-  var checkedLeadIds = [];
+  checkedLeadIds = [];
   document.querySelectorAll('.table-checkbox').forEach(function (box) {
     if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
       checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
   })
   var editLeads = getLeadArrayById(leads, checkedLeadIds);
-  createMassEditLead(editLeads);
+  var massLead = createMassEditLead(editLeads);
+  var $popupRow = createElementWithClass('div', 'row');
+  createLeadForm(massLead, $popupRow, true);
+  updatePopupForm($popupRow);
 })
 
 var createMassEditLead = function(editLeads) {
-  var leadProperties = [];
   var massLead = new lead();
   for (var prop in editLeads[0]) {
-    leadProperties.push(prop);
-    // extract all values o
     var arrPropValues = [];
     editLeads.forEach(function (lead) {
       arrPropValues.push(lead[prop].field);
     })
-
-    console.log(arrPropValues);
-    console.log(arrPropValues.every(areArrayValuesIdential));
-
+    if(arrPropValues.every(areArrayValuesIdentical)) {
+      massLead[prop].field = arrPropValues[0];
+    } else {
+      massLead[prop].field = prop;
+    }
   }
-
+  return massLead;
 }
 
-var areArrayValuesIdential = function(el, index, arr) {
+var areArrayValuesIdentical = function(el, index, arr) {
   if (index === 0) {
     return true;
   } else {
@@ -282,12 +284,13 @@ var resetFilter = function() {
 var saveForm = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
+  var masterLead = getMasterLeadById(leads, inputLead.id.field);
 
   if (checkIfNew(inputLead)) {
     inputLead = assignNewId(inputLead);
     addLead(inputLead);
     initializeLeadPage();
-  } else if (checkIfChanged(inputLead)) {
+  } else if (checkIfChanged(inputLead, masterLead)) {
     updateMasterLead(inputLead);
     initializeLeadPage();
   }
@@ -316,7 +319,7 @@ var updateMasterLead = function(inputLead) {
   leads[getMasterLeadIndexById(leads, inputLead.id.field)] = inputLead;
 }
 
-var checkIfChanged = function(inputLead) {
+var checkIfChanged = function(inputLead, masterLead) {
   var masterLead = getMasterLeadById(leads, inputLead.id.field);
 
   for (var prop in masterLead) {
@@ -383,10 +386,12 @@ var createLeadsFromCSV = function(csvData) {
 }
 
 // POPUP FUNCTIONS
-var updatePopupForm = function($form) {
+// types can be new, edit, mass
+var updatePopupForm = function($form, type) {
   var $leadPopupDetail = document.querySelector('.lead-edit-details');
   var $leadEditPU = document.querySelector('#lead-edit-popup');
 
+  $leadEditPU.setAttribute('popup-type', type);
   clearChildNodes($leadPopupDetail);
   $leadPopupDetail.appendChild($form);
   $leadEditPU.style.display = 'inline-block';
@@ -395,8 +400,14 @@ var updatePopupForm = function($form) {
 var closePopup = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
+  var masterLead = getMasterLeadById(leads, inputLead.id.field);
+  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
 
-  if (checkIfChanged(inputLead)) {
+  } else {
+    masterLead = getMasterLeadById(leads, inputLead.id.field);
+  }
+
+  if (checkIfChanged(inputLead, masterLead)) {
     var answer = confirm('Save your changes?');
     if (answer) {
       updateMasterLead(inputLead);
