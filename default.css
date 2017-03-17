@@ -76,3 +76,7 @@
 .ten-px-vspace {
   height: 10px;
 }
+
+#lead-table tr:hover {
+  background-color: #f1f1f1;
+}
