@@ -30,16 +30,6 @@
   float: right;
 }
 
-#dashboard-container {
-  border: 1px black;
-  margin: 5px;
-}
-
-#details-container {
-  border: 1px black;
-  margin: 5px;
-}
-
 .hidden {
   display: none;
 }
@@ -47,7 +37,7 @@
 .popup {
   display: none;
   position: fixed;
-  z-index: 10;
+  z-index: 1;
   left: 0;
   top: 0;
   width: 100%;
@@ -69,6 +59,7 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+  margin: 0;
 }
 
 .close:hover,
