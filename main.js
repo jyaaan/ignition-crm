@@ -105,6 +105,30 @@ $resetFilterButton.addEventListener('click', function () {
   initializeLeadPage();
 })
 
+var $fileUpload = document.querySelector('#csv-upload');
+$fileUpload.addEventListener('change', function (event) {
+  console.log('upload triggered');
+  var data = null;
+  var file = event.target.files[0];
+  var reader = new FileReader();
+  var newLeads = [];
+
+  reader.readAsText(file);
+  reader.onload = function (loadEvent) {
+    var csvData = loadEvent.target.result;
+
+    data = $.csv.toArrays(csvData);
+    if (data && data.length > 0) {
+      alert('Imported' + ' ' + data.length + ' ' + 'rows.');
+      Array.prototype.push.apply(leads, createLeadsFromCSV(data));
+      initializeLeadPage();
+    }
+    reader.onerror = function () {
+      alert('Unable to read' + ' ' + file.fileName);
+    }
+  }
+  // console.log(newLeads);
+})
 
 // LEAD TABLE FUNCTIONS
 var initializeLeadPage = function() {
@@ -266,6 +290,22 @@ var getFilteredLeads = function(filterProperty, filterValue, masterLeads) {
     }
   })
   return filteredLeads;
+}
+
+// Header row contains property names for each
+var createLeadsFromCSV = function(csvData) {
+  var importLeads = [];
+  var propertyNames = csvData[0];
+
+  for (var i = 1; i < csvData.length; i++) {
+    var tempLead = new lead();
+    for (var j = 0; j < csvData[i].length; j++) {
+      tempLead[csvData[0][j]].field = csvData[i][j];
+    }
+    tempLead = assignNewId(tempLead);
+    importLeads.push(tempLead);
+  }
+  return importLeads;
 }
 
 // POPUP FUNCTIONS

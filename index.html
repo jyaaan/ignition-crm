@@ -147,6 +147,15 @@
       <!-- Leads Details -->
       <div id="lead-details" class="hidden col-xs-12">
         <div class="row">
+          <div class="fileupload">
+            <fieldset>
+              <legend>Upload your CSV File</legend>
+              <input type="file" name="File Upload" id="csv-upload" accept=".csv" />
+            </fieldset>
+          </div>
+        </div>
+        <div class="row ten-px-vspace"></div>
+        <div class="row">
           <button class="button col-xs-2" id="lead-create-button">Create New Lead</button>
         </div>
         <div class="row ten-px-vspace"></div>
@@ -172,6 +181,7 @@
             <button class="button" id="filter-reset-button">Reset</button>
           </div>
         </div>
+        <div class="row ten-px-vspace"></div>
         <div class="row ten-px-vspace"></div>
         <div class="row panel panel-default">
           <div class="panel-heading">Leads</div>
@@ -202,6 +212,7 @@
 
     <!-- SCRIPTS -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="jquery.csv.js"></script>
     <script src="charts.js"></script>
     <script src="main.js"></script>
   </body>
