@@ -1,32 +1,353 @@
-// TEMP
-
 // GLOBAL VARS
+var checkedLeadIds = [];
+var massLead = new lead();
 
+function lead(fname, lname, bname, stage, id) {
+  this.firstName = { field: fname, isEditable: true };
+  this.lastName = { field: lname, isEditable: true };
+  this.brand = { field: bname, isEditable: true };
+  this.stage = { field: stage, isEditable: true };
+  this.id = { field: id, isEditable: false };
+};
+
+var leads = [];
+
+function tempInitializeLeads() {
+  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
+  leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
+  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
+}
 
 // UTILITY FUNCTIONS
-var createElementWithClass = function(type, className) {
+
+function createElementWithClass(type, className) {
   var $tempElem = document.createElement(type);
 
   $tempElem.classList.add(className);
   return $tempElem;
 }
 
-var appendArrAsChild = function ($node, arrElements) {
+function appendArrAsChild($node, arrElements) {
   for (var elem in arrElements) {
     $node.appendChild(arrElements[elem]);
   }
   return $node;
 }
 
-var clearChildNodes = function($table) {
+function clearChildNodes($table) {
   while($table.firstChild) {
     $table.removeChild($table.firstChild);
   }
 }
 
-var swapVisibility = function($elemToHide, $elemToShow) {
+function swapVisibility($elemToHide, $elemToShow) {
   $elemToHide.classList.add('hidden');
   $elemToShow.classList.remove('hidden');
+}
+
+function areArrayValuesIdentical(el, index, arr) {
+  if (index === 0) {
+    return true;
+  } else {
+    return (el === arr[index - 1]);
+  }
+}
+
+function getLeadArrayByIds(masterLeads, arrId) {
+  var matchLeads = [];
+  arrId.forEach(function (id) {
+    matchLeads.push(getMasterLeadById(masterLeads, id));
+  })
+  return matchLeads;
+}
+
+// TABLE FUNCTIONS
+
+function anyAreChecked() {
+  var isChecked = false;
+  document.querySelectorAll('.table-checkbox').forEach(function (box) {
+    if (box.checked) {
+      isChecked = true;
+    }
+  })
+  return isChecked;
+}
+
+function initializeLeadPage() {
+  clearChildNodes($leadTable);
+  createTableElements(leads, $leadTable);
+  resetFilter();
+}
+
+function createFormProperties(arrTableData, type) {
+  var arrRowData = [];
+
+  for (var datum in arrTableData) {
+    var tempElem = document.createElement(type);
+    tempElem.textContent = datum;
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+}
+
+function populateFormData(arrTableData, type, leadId) {
+  var arrRowData = [];
+
+  for (var datum in arrTableData) {
+    var tempElem = document.createElement(type);
+    tempElem.setAttribute('lead-id', leadId)
+    tempElem.textContent = arrTableData[datum].field;
+    arrRowData.push(tempElem);
+  }
+  return arrRowData;
+}
+
+function createCheckbox(type, leadId) {
+  var $type = document.createElement(type);
+  var $checkBox = document.createElement('input');
+  $checkBox.checked = false;
+  $checkBox.setAttribute('type', 'checkbox');
+  $checkBox.setAttribute('checkbox-id', leadId);
+  $checkBox.classList.add('table-checkbox');
+  $type.appendChild($checkBox);
+  return $type;
+}
+
+function createTableElements(leads, $table) {
+  var $header = document.createElement('tr');
+
+  $header.appendChild(createCheckbox('th', 'header'));
+  $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
+
+  $table.appendChild($header);
+
+  for (var lead in leads) {
+    var $row = document.createElement('tr');
+    $row.appendChild(createCheckbox('td', leads[lead].id.field));
+    $row.setAttribute('lead-id', leads[lead].id.field);
+    $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
+    $table.appendChild($row);
+  }
+}
+
+function resetFilter() {
+  var $dropdownButton = document.querySelector('#dropdown-button');
+  var $filterInput = document.querySelector('#filter-input');
+  $applyFilterButton.disabled = true;
+  $filterInput.value = '';
+  $filterInput.disabled = true;
+  $dropdownButton.textContent = 'Filter By';
+}
+
+// POPUP FUNCTIONS
+
+function createLeadForm(editLead, $formRow, isEdit = true) {
+  for (var prop in editLead) {
+    var $arrElems = [];
+    var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+
+    $arrElems[0] = createElementWithClass('span', 'input-group');
+    $arrElems[0].textContent = prop;
+    $arrElems[1] = createElementWithClass('input', 'form-control');
+    $arrElems[1].setAttribute('type', 'text');
+    $arrElems[1].setAttribute('lead-property', prop);
+    $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+    $arrElems[1].classList.add('lead-property-input')
+    $arrElems[1].disabled = !editLead[prop].isEditable;
+
+    if (isEdit) {
+      $arrElems[1].value = editLead[prop].field;
+    }
+    $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+    $formRow.appendChild($propertyDiv);
+  }
+}
+
+// types can be new, edit, mass
+function updatePopupForm($form, type) {
+  var $leadPopupDetail = document.querySelector('.lead-edit-details');
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
+
+  $leadEditPU.setAttribute('popup-type', type);
+  clearChildNodes($leadPopupDetail);
+  $leadPopupDetail.appendChild($form);
+  $leadEditPU.style.display = 'inline-block';
+}
+
+function closePopup() {
+  var inputLead = getLeadInputArray();
+  console.log(inputLead);
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
+  var masterLead = new lead();
+
+  switch ($leadEditPU.getAttribute('popup-type', 'mass')) {
+    case 'mass':
+      masterLead = massLead;
+      break;
+    case 'new':
+      break;
+    case 'edit':
+      masterLead = getMasterLeadById(leads, inputLead.id.field);
+  }
+  if (checkIfChanged(inputLead, masterLead)) {
+    console.log(inputLead);
+    if (confirm('Save your changes?')) {
+      savePopupData(inputLead, masterLead);
+      initializeLeadPage();
+    }
+  }
+  $leadEditPU.style.display = 'none';
+}
+
+function savePopup() {
+  var inputLead = getLeadInputArray();
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
+  var masterLead = new lead();
+
+  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
+    masterLead = massLead;
+    } else {
+    masterLead = getMasterLeadById(leads, inputLead.id.field);
+  }
+
+  savePopupData(inputLead, masterLead);
+  initializeLeadPage();
+  $leadEditPU.style.display = 'none';
+}
+
+function savePopupData(inputLead, masterLead) {
+  var $leadEditPU = document.querySelector('#lead-edit-popup');
+  if (checkIfNew(inputLead)) {
+    inputLead = assignNewId(inputLead);
+    addLead(inputLead);
+  } else if (checkIfChanged(inputLead, masterLead)) {
+    if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
+      updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+    } else {
+      updateMasterLead(inputLead, leads);
+    }
+  }
+}
+
+// MASS EDIT FUNCTIONS
+
+function createMassEditLead(editLeads) {
+  var tempLead = new lead();
+  for (var prop in editLeads[0]) {
+    var arrPropValues = [];
+    editLeads.forEach(function (lead) {
+      arrPropValues.push(lead[prop].field);
+    })
+    if(arrPropValues.every(areArrayValuesIdentical)) {
+      tempLead[prop].field = arrPropValues[0];
+    } else {
+      tempLead[prop].field = prop;
+    }
+  }
+  return tempLead;
+}
+
+function updateMassLeads(leadIds, inputLead, masterLeads, massEditLead) {
+  for (var prop in inputLead) {
+    if (isPropertyChanged(inputLead, massEditLead, prop)) {
+      leadIds.forEach(function (id) {
+        var editLeadPosition = getMasterLeadIndexById(masterLeads, id);
+        masterLeads[editLeadPosition][prop].field = inputLead[prop].field;
+      })
+    }
+  }
+}
+
+// LEAD DATA FUNCTIONS
+
+function createLeadsFromCSV(csvData) {
+  var importLeads = [];
+  var propertyNames = csvData[0];
+
+  for (var i = 1; i < csvData.length; i++) {
+    var tempLead = new lead();
+    for (var j = 0; j < csvData[i].length; j++) {
+      tempLead[csvData[0][j]].field = csvData[i][j];
+    }
+    tempLead = assignNewId(tempLead);
+    importLeads.push(tempLead);
+  }
+  return importLeads;
+}
+
+function isPropertyChanged(inputLead, massEditLead, prop) {
+  return (inputLead[prop].field !== massEditLead[prop].field);
+}
+
+function createLead() {
+  var newLead = new lead();
+  var $popupRow = createElementWithClass('div', 'row');
+
+  createLeadForm(newLead, $popupRow, false);
+  updatePopupForm($popupRow, 'new');
+}
+
+function getLeadInputArray() {
+  var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
+  var inputLead = new lead();
+
+  $arrLeadInputs.forEach(function (input) {
+    inputLead[input.getAttribute('lead-property')].field = input.value;
+  })
+  return inputLead;
+}
+
+function updateMasterLead(inputLead, masterLeads) {
+  masterLeads[getMasterLeadIndexById(masterLeads, inputLead.id.field)] = inputLead;
+}
+
+function checkIfChanged(inputLead, masterLead) {
+
+  for (var prop in masterLead) {
+    if (masterLead[prop].field !== inputLead[prop].field) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkIfNew(inputLead) {
+  if (inputLead.id.field === '') {
+    return true;
+  }
+  return false;
+}
+
+function assignNewId(lead) {
+  lead.id.field = Math.random().toString(32).substr(2, 9);
+  return lead;
+}
+
+function addLead(lead) {
+  leads.push(lead);
+}
+
+function getMasterLeadById(masterLeads, leadId) {
+  return masterLeads.find(function (lead) {
+    return lead.id.field === leadId;
+  })
+}
+
+function getMasterLeadIndexById(masterLeads, leadId) {
+  return masterLeads.findIndex(function (lead) {
+    return lead.id.field === leadId;
+  })
+}
+
+function getFilteredLeads(filterProperty, filterValue, masterLeads) {
+  var filteredLeads = [];
+
+  masterLeads.forEach(function (lead) {
+    if (lead[filterProperty].field == filterValue) {
+      filteredLeads.push(lead);
+    }
+  })
+  return filteredLeads;
 }
 
 // EVENT LISTENERS AND VARIABLES
@@ -57,7 +378,7 @@ $leadTable.addEventListener('click', function (event) {
     });
     var $popupRow = createElementWithClass('div', 'row');
     createLeadForm(editLead, $popupRow, true);
-    updatePopupForm($popupRow);
+    updatePopupForm($popupRow, 'edit');
   } else {
     if (event.target.getAttribute('checkbox-id') == 'header') {
       document.querySelectorAll('.table-checkbox').forEach(function (box) {
@@ -68,70 +389,9 @@ $leadTable.addEventListener('click', function (event) {
   }
 })
 
-var anyAreChecked = function() {
-  var isChecked = false;
-  document.querySelectorAll('.table-checkbox').forEach(function (box) {
-    if (box.checked) {
-      isChecked = true;
-    }
-  })
-  return isChecked;
-}
-
-// used to update leads if changes are detected
-var checkedLeadIds = [];
-// used to detect changes
-var massLead = new lead();
-var $massEditButton = document.querySelector('#mass-edit-button');
-$massEditButton.addEventListener('click', function () {
-  checkedLeadIds = [];
-  document.querySelectorAll('.table-checkbox').forEach(function (box) {
-    if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
-      checkedLeadIds.push(box.getAttribute('checkbox-id'));
-    }
-  })
-  var editLeads = getLeadArrayById(leads, checkedLeadIds);
-  massLead = createMassEditLead(editLeads);
-  var $popupRow = createElementWithClass('div', 'row');
-  createLeadForm(massLead, $popupRow, true);
-  updatePopupForm($popupRow);
-})
-
-var createMassEditLead = function(editLeads) {
-  var tempLead = new lead();
-  for (var prop in editLeads[0]) {
-    var arrPropValues = [];
-    editLeads.forEach(function (lead) {
-      arrPropValues.push(lead[prop].field);
-    })
-    if(arrPropValues.every(areArrayValuesIdentical)) {
-      tempLead[prop].field = arrPropValues[0];
-    } else {
-      tempLead[prop].field = prop;
-    }
-  }
-  return tempLead;
-}
-
-var areArrayValuesIdentical = function(el, index, arr) {
-  if (index === 0) {
-    return true;
-  } else {
-    return (el === arr[index - 1]);
-  }
-}
-
-var getLeadArrayById = function(masterLeads, arrId) {
-  var matchLeads = [];
-  arrId.forEach(function (id) {
-    matchLeads.push(getMasterLeadById(masterLeads, id));
-  })
-  return matchLeads;
-}
-
 var $leadSaveButton = document.querySelector('#lead-edit-save');
 $leadSaveButton.addEventListener('click', function () {
-  saveForm();
+  savePopup();
 })
 
 var $leadCreateButton = document.querySelector('#lead-create-button');
@@ -195,272 +455,20 @@ $fileUpload.addEventListener('change', function (event) {
   }
 })
 
-// LEAD TABLE FUNCTIONS
-var initializeLeadPage = function() {
-  clearChildNodes($leadTable);
-  createTableElements(leads, $leadTable);
-  resetFilter();
-}
-
-var createFormProperties = function (arrTableData, type) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.textContent = datum;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
-
-var populateFormData = function (arrTableData, type, leadId) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.setAttribute('lead-id', leadId)
-    tempElem.textContent = arrTableData[datum].field;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
-
-var createCheckbox = function(type, leadId) {
-  var $type = document.createElement(type);
-  var $checkBox = document.createElement('input');
-  $checkBox.checked = false;
-  $checkBox.setAttribute('type', 'checkbox');
-  $checkBox.setAttribute('checkbox-id', leadId);
-  $checkBox.classList.add('table-checkbox');
-  $type.appendChild($checkBox);
-  return $type;
-}
-
-var createTableElements = function(leads, $table) {
-  var $header = document.createElement('tr');
-
-  $header.appendChild(createCheckbox('th', 'header'));
-  $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
-
-  $table.appendChild($header);
-
-  for (var lead in leads) {
-    var $row = document.createElement('tr');
-    $row.appendChild(createCheckbox('td', leads[lead].id.field));
-    $row.setAttribute('lead-id', leads[lead].id.field);
-    $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
-    $table.appendChild($row);
-  }
-}
-
-var createLeadForm = function(editLead, $formRow, isEdit = true) {
-  for (var prop in editLead) {
-    var $arrElems = [];
-    var $propertyDiv = createElementWithClass('div', 'col-xs-2');
-
-    $arrElems[0] = createElementWithClass('span', 'input-group');
-    $arrElems[0].textContent = prop;
-    $arrElems[1] = createElementWithClass('input', 'form-control');
-    $arrElems[1].setAttribute('type', 'text');
-    $arrElems[1].setAttribute('lead-property', prop);
-    $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-    $arrElems[1].classList.add('lead-property-input')
-    $arrElems[1].disabled = !editLead[prop].isEditable;
-
-    if (isEdit) {
-      $arrElems[1].value = editLead[prop].field;
+var $massEditButton = document.querySelector('#mass-edit-button');
+$massEditButton.addEventListener('click', function () {
+  checkedLeadIds = [];
+  document.querySelectorAll('.table-checkbox').forEach(function (box) {
+    if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
+      checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
-    $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
-    $formRow.appendChild($propertyDiv);
-  }
-}
-
-var resetFilter = function() {
-  var $dropdownButton = document.querySelector('#dropdown-button');
-  var $filterInput = document.querySelector('#filter-input');
-  $applyFilterButton.disabled = true;
-  $filterInput.value = '';
-  $filterInput.disabled = true;
-  $dropdownButton.textContent = 'Filter By';
-}
-// LEAD DATA FUNCTIONS
-var saveForm = function() {
-  var inputLead = getLeadInputArray();
-  var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead;
-
-  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    masterLead = massLead;
-    } else {
-    masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
-
-  if (checkIfNew(inputLead)) {
-    inputLead = assignNewId(inputLead);
-    addLead(inputLead);
-  } else if (checkIfChanged(inputLead, masterLead)) {
-    if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-      updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
-    } else {
-      updateMasterLead(inputLead, leads);
-    }
-  }
-  initializeLeadPage();
-  $leadEditPU.style.display = 'none';
-}
-
-var createLead = function() {
-  var newLead = new lead();
+  })
+  var editLeads = getLeadArrayByIds(leads, checkedLeadIds);
+  massLead = createMassEditLead(editLeads);
   var $popupRow = createElementWithClass('div', 'row');
-
-  createLeadForm(newLead, $popupRow, false);
-  updatePopupForm($popupRow);
-}
-
-var getLeadInputArray = function() {
-  var $arrLeadInputs = document.querySelectorAll('.lead-property-input');
-  var inputLead = new lead();
-
-  $arrLeadInputs.forEach(function (input) {
-    inputLead[input.getAttribute('lead-property')].field = input.value;
-  })
-  return inputLead;
-}
-
-var updateMasterLead = function(inputLead, masterLeads) {
-  leads[getMasterLeadIndexById(masterLeads, inputLead.id.field)] = inputLead;
-}
-
-var checkIfChanged = function(inputLead, masterLead) {
-
-  for (var prop in masterLead) {
-    if (masterLead[prop].field !== inputLead[prop].field) {
-      return true;
-    }
-  }
-  return false;
-}
-
-var checkIfNew = function(inputLead) {
-  if (inputLead.id.field === '') {
-    return true;
-  }
-  return false;
-}
-
-var assignNewId = function(lead) {
-  lead.id.field = Math.random().toString(32).substr(2, 9);
-  return lead;
-}
-
-var addLead = function(lead) {
-  leads.push(lead);
-}
-
-var getMasterLeadById = function (masterLeads, leadId) {
-  return masterLeads.find(function (lead) {
-    return lead.id.field === leadId;
-  })
-}
-
-var getMasterLeadIndexById = function (masterLeads, leadId) {
-  return masterLeads.findIndex(function (lead) {
-    return lead.id.field === leadId;
-  })
-}
-
-var getFilteredLeads = function(filterProperty, filterValue, masterLeads) {
-  var filteredLeads = [];
-
-  masterLeads.forEach(function (lead) {
-    if (lead[filterProperty].field == filterValue) {
-      filteredLeads.push(lead);
-    }
-  })
-  return filteredLeads;
-}
-
-// Header row contains property names for each
-var createLeadsFromCSV = function(csvData) {
-  var importLeads = [];
-  var propertyNames = csvData[0];
-
-  for (var i = 1; i < csvData.length; i++) {
-    var tempLead = new lead();
-    for (var j = 0; j < csvData[i].length; j++) {
-      tempLead[csvData[0][j]].field = csvData[i][j];
-    }
-    tempLead = assignNewId(tempLead);
-    importLeads.push(tempLead);
-  }
-  return importLeads;
-}
-
-// POPUP FUNCTIONS
-// types can be new, edit, mass
-var updatePopupForm = function($form, type) {
-  var $leadPopupDetail = document.querySelector('.lead-edit-details');
-  var $leadEditPU = document.querySelector('#lead-edit-popup');
-
-  $leadEditPU.setAttribute('popup-type', type);
-  clearChildNodes($leadPopupDetail);
-  $leadPopupDetail.appendChild($form);
-  $leadEditPU.style.display = 'inline-block';
-}
-
-var closePopup = function() {
-  var inputLead = getLeadInputArray();
-  var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead;
-  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    masterLead = massLead;
-    } else {
-    masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
-
-  if (checkIfChanged(inputLead, masterLead)) {
-    if (confirm('Save your changes?')) {
-      if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-        updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
-      } else {
-        updateMasterLead(inputLead, leads);
-      }
-      initializeLeadPage();
-    }
-  }
-  $leadEditPU.style.display = 'none';
-}
-
-function isPropertyChanged(inputLead, massEditLead, prop) {
-  return (inputLead[prop].field !== massEditLead[prop].field);
-}
-
-var updateMassLeads = function(leadIds, inputLead, masterLeads, massEditLead) {
-  for (var prop in inputLead) {
-    if (isPropertyChanged(inputLead, massEditLead, prop)) {
-      leadIds.forEach(function (id) {
-        var editLeadPosition = getMasterLeadIndexById(masterLeads, id);
-        masterLeads[editLeadPosition][prop].field = inputLead[prop].field;
-      })
-    }
-  }
-}
-// Lead Object and Data
-function lead(fname, lname, bname, stage, id) {
-  this.firstName = { field: fname, isEditable: true };
-  this.lastName = { field: lname, isEditable: true };
-  this.brand = { field: bname, isEditable: true };
-  this.stage = { field: stage, isEditable: true };
-  this.id = { field: id, isEditable: false };
-};
-
-var leads = [];
-
-function tempInitializeLeads() {
-  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
-  leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
-  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
-}
+  createLeadForm(massLead, $popupRow, true);
+  updatePopupForm($popupRow, 'mass');
+})
 
 // On run
 tempInitializeLeads();
