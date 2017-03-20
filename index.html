@@ -39,181 +39,183 @@
     </nav>
 
     <!-- DASHBOARDS -->
-    <div id="dashboard-container" class="jumbotron col-xs-12">
-      <!-- landing page dashboard -->
-      <div id="landing-page-dashboard" class="visible">
-        <h2>Dashboard</h2>
-       <div class="row chart-container">
-         <div class="col-md-4 cohort-chart"></div>
-         <div class="col-md-4 cac-chart"></div>
-         <div class="col-md-4 mrr-chart"></div>
-       </div>
-       <div class="row">
-         <div class="col-md-12">
-           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus erat ac fringilla consectetur. Etiam ac arcu id diam congue tristique sed blandit lacus. Ut elementum ac eros eget molestie. Nulla facilisi. Donec consequat urna nisl, sit amet interdum turpis congue vitae. Phasellus malesuada elit et suscipit consequat. Fusce luctus, purus sit amet dictum facilisis, purus tortor tempus quam, in maximus turpis odio nec nisi. Nullam tristique porta facilisis. Vestibulum aliquam ac mi in mattis. Donec pretium fringilla nunc quis finibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc molestie nibh eget lacus gravida vestibulum. Nullam sodales tempor porttitor. Suspendisse ultricies venenatis leo vitae dignissim.
+    <div class="container">
+      <div id="dashboard-container" class="jumbotron col-xs-12">
+        <!-- landing page dashboard -->
+        <div id="landing-page-dashboard" class="visible">
+          <h2>Dashboard</h2>
+         <div class="row chart-container">
+           <div class="col-md-4 cohort-chart"></div>
+           <div class="col-md-4 cac-chart"></div>
+           <div class="col-md-4 mrr-chart"></div>
          </div>
-       </div>
-       <div class="row">
-         <div class="col-md-9"></div>
-         <div class="col-md-2">
-           <button type="button" class="btn btn-primary button-right">What do these mean?</button>
+         <div class="row">
+           <div class="col-md-12">
+             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus erat ac fringilla consectetur. Etiam ac arcu id diam congue tristique sed blandit lacus. Ut elementum ac eros eget molestie. Nulla facilisi. Donec consequat urna nisl, sit amet interdum turpis congue vitae. Phasellus malesuada elit et suscipit consequat. Fusce luctus, purus sit amet dictum facilisis, purus tortor tempus quam, in maximus turpis odio nec nisi. Nullam tristique porta facilisis. Vestibulum aliquam ac mi in mattis. Donec pretium fringilla nunc quis finibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc molestie nibh eget lacus gravida vestibulum. Nullam sodales tempor porttitor. Suspendisse ultricies venenatis leo vitae dignissim.
+           </div>
          </div>
-       </div>
+         <div class="row">
+           <div class="col-md-9"></div>
+           <div class="col-md-2">
+             <button type="button" class="btn btn-primary button-right">What do these mean?</button>
+           </div>
+         </div>
+        </div>
+
+        <!-- lead page dashboard -->
+        <div id="lead-page-dashboard" class="hidden">
+          <h2>Leads</h2>
+        </div>
       </div>
 
-      <!-- lead page dashboard -->
-      <div id="lead-page-dashboard" class="hidden">
-        <h2>Leads</h2>
-      </div>
-    </div>
-
-    <!-- DETAILS -->
-    <div id="details-container" class="col-xs-12">
-      <!-- landing page details -->
-      <div id="landing-page-details">
-        <div class="row">
-          <div class="col-md-4 panel panel default">
-            <div class="panel-heading">Tasks</div>
-            <div class="panel-body">
-              <p>Your currently open tasks.</p>
+      <!-- DETAILS -->
+      <div id="details-container" class="col-xs-12">
+        <!-- landing page details -->
+        <div id="landing-page-details">
+          <div class="row">
+            <div class="col-md-4 panel panel default">
+              <div class="panel-heading">Tasks</div>
+              <div class="panel-body">
+                <p>Your currently open tasks.</p>
+              </div>
+              <table class="table">
+                <tr>
+                  <th>Task Name</th>
+                  <th>Due Date</th>
+                </tr>
+                <tr>
+                  <td>Fix mapping</td>
+                  <td>3/12/17</td>
+                </tr>
+                <tr>
+                  <td>Send cold emails</td>
+                  <td>4/1/17</td>
+                </tr>
+              </table>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-primary">Go</button>
+              </div>
             </div>
-            <table class="table">
-              <tr>
-                <th>Task Name</th>
-                <th>Due Date</th>
-              </tr>
-              <tr>
-                <td>Fix mapping</td>
-                <td>3/12/17</td>
-              </tr>
-              <tr>
-                <td>Send cold emails</td>
-                <td>4/1/17</td>
-              </tr>
+            <div class="col-md-4 panel panel default">
+              <div class="panel-heading">Cases</div>
+              <div class="panel-body">
+                <p>Your currently open cases.</p>
+              </div>
+              <table class="table">
+                <tr>
+                  <th>Case Name</th>
+                  <th>User</th>
+                </tr>
+                <tr>
+                  <td>Swordfish mapped to swords</td>
+                  <td>Teddy</td>
+                </tr>
+                <tr>
+                  <td>Metrics borked</td>
+                  <td>Alex</td>
+                </tr>
+              </table>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-primary">Go</button>
+              </div>
+            </div>
+            <div class="col-md-4 panel panel default">
+              <div class="panel-heading">Quick Reports</div>
+              <div class="panel-body">
+                <p>Your guide to the world of facts</p>
+              </div>
+              <table class="table">
+                <tr>
+                  <th>Report Name</th>
+                  <th>Type</th>
+                </tr>
+                <tr>
+                  <td>Customer Retention</td>
+                  <td>Heatmap</td>
+                </tr>
+                <tr>
+                  <td>New Recipes by Week</td>
+                  <td>Bar chart</td>
+                </tr>
+              </table>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-primary">Go</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leads Details -->
+        <div id="lead-details" class="hidden col-xs-12">
+          <div class="row">
+            <div class="fileupload">
+              <fieldset>
+                <legend>Upload your CSV File</legend>
+                <input type="file" name="File Upload" id="csv-upload" accept=".csv" />
+              </fieldset>
+            </div>
+          </div>
+          <div class="row ten-px-vspace"></div>
+          <div class="row">
+            <button class="button col-xs-2" id="lead-create-button">Create New Lead</button>
+          </div>
+          <div class="row ten-px-vspace"></div>
+          <div class="row">
+            <div class="col-xs-2">
+              <input type="text" class="form-control" id="filter-input" disabled="true" />
+            </div>
+            <div class="dropdown filter-dropdown col-xs-1">
+              <button class="btn btn-default dropdown-toggle" id="dropdown-button"
+              type="button" data-toggle="dropdown">Filter By<span class="caret"></span></button>
+              <ul class="dropdown-menu" id="filter-properties">
+                <li><a href="#">firstName</a></li>
+                <li><a href="#">lastName</a></li>
+                <li><a href="#">brand</a></li>
+                <li><a href="#">stage</a></li>
+                <li><a href="#">id</a></li>
+              </ul>
+            </div>
+            <div class="col-xs-2">
+              <button class="button" id="apply-filter-button" disabled="true">Apply Filter</button>
+            </div>
+            <div class="col-xs-2">
+              <button class="button" id="filter-reset-button">Reset</button>
+            </div>
+          </div>
+          <div class="row ten-px-vspace"></div>
+          <div class="row">
+            <button class="button col-xs-2" id="mass-edit-button" disabled="true">
+              Edit Selection
+            </button>
+          </div>
+          <div class="row ten-px-vspace"></div>
+          <div class="row ten-px-vspace"></div>
+          <div class="row panel panel-default">
+            <div class="panel-heading">Leads</div>
+            <table class="table" id="lead-table">
             </table>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-primary">Go</button>
-            </div>
           </div>
-          <div class="col-md-4 panel panel default">
-            <div class="panel-heading">Cases</div>
-            <div class="panel-body">
-              <p>Your currently open cases.</p>
-            </div>
-            <table class="table">
-              <tr>
-                <th>Case Name</th>
-                <th>User</th>
-              </tr>
-              <tr>
-                <td>Swordfish mapped to swords</td>
-                <td>Teddy</td>
-              </tr>
-              <tr>
-                <td>Metrics borked</td>
-                <td>Alex</td>
-              </tr>
-            </table>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-primary">Go</button>
-            </div>
+        </div>
+      </div>
+
+      <!-- POP UPS -->
+      <div class="popup" id="lead-edit-popup">
+        <div class="popup-content col-xs-10 col-xs-offset-1" id="lead-edit-container">
+          <div class="row col-xs-12" id="lead-edit-control">
+            <button class="button col-xs-1" id="lead-edit-save">Save</button>
+            <span class="close col-xs-1">&times;</span>
           </div>
-          <div class="col-md-4 panel panel default">
-            <div class="panel-heading">Quick Reports</div>
-            <div class="panel-body">
-              <p>Your guide to the world of facts</p>
-            </div>
-            <table class="table">
-              <tr>
-                <th>Report Name</th>
-                <th>Type</th>
-              </tr>
-              <tr>
-                <td>Customer Retention</td>
-                <td>Heatmap</td>
-              </tr>
-              <tr>
-                <td>New Recipes by Week</td>
-                <td>Bar chart</td>
-              </tr>
-            </table>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-primary">Go</button>
+          <div class="row">
+            <div class="lead-edit-details col-xs-10">
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Leads Details -->
-      <div id="lead-details" class="hidden col-xs-12">
-        <div class="row">
-          <div class="fileupload">
-            <fieldset>
-              <legend>Upload your CSV File</legend>
-              <input type="file" name="File Upload" id="csv-upload" accept=".csv" />
-            </fieldset>
-          </div>
-        </div>
-        <div class="row ten-px-vspace"></div>
-        <div class="row">
-          <button class="button col-xs-2" id="lead-create-button">Create New Lead</button>
-        </div>
-        <div class="row ten-px-vspace"></div>
-        <div class="row">
-          <div class="col-xs-2">
-            <input type="text" class="form-control" id="filter-input" disabled="true" />
-          </div>
-          <div class="dropdown filter-dropdown col-xs-1">
-            <button class="btn btn-default dropdown-toggle" id="dropdown-button"
-            type="button" data-toggle="dropdown">Filter By<span class="caret"></span></button>
-            <ul class="dropdown-menu" id="filter-properties">
-              <li><a href="#">firstName</a></li>
-              <li><a href="#">lastName</a></li>
-              <li><a href="#">brand</a></li>
-              <li><a href="#">stage</a></li>
-              <li><a href="#">id</a></li>
-            </ul>
-          </div>
-          <div class="col-xs-2">
-            <button class="button" id="apply-filter-button" disabled="true">Apply Filter</button>
-          </div>
-          <div class="col-xs-2">
-            <button class="button" id="filter-reset-button">Reset</button>
-          </div>
-        </div>
-        <div class="row ten-px-vspace"></div>
-        <div class="row">
-          <button class="button col-xs-2" id="mass-edit-button" disabled="true">
-            Edit Selection
-          </button>
-        </div>
-        <div class="row ten-px-vspace"></div>
-        <div class="row ten-px-vspace"></div>
-        <div class="row panel panel-default">
-          <div class="panel-heading">Leads</div>
-          <table class="table" id="lead-table">
-          </table>
-        </div>
+      <!-- FOOTER DIV -->
+      <div class="row col-xs-12">
+        <div class="copyright">&copy; 2017 Eatify, Inc.</div>
       </div>
-    </div>
-
-    <!-- POP UPS -->
-    <div class="popup" id="lead-edit-popup">
-      <div class="popup-content col-xs-10 col-xs-offset-1" id="lead-edit-container">
-        <div class="row col-xs-12" id="lead-edit-control">
-          <button class="button col-xs-1" id="lead-edit-save">Save</button>
-          <span class="close col-xs-1">&times;</span>
-        </div>
-        <div class="row">
-          <div class="lead-edit-details col-xs-10">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FOOTER DIV -->
-    <div class="row col-xs-12">
-      <div class="copyright">&copy; 2017 Eatify, Inc.</div>
     </div>
 
     <!-- SCRIPTS -->
