@@ -148,7 +148,7 @@
         <!-- Leads Details -->
         <div id="lead-details" class="hidden">
           <div class="row">
-            <div class="fileupload">
+            <div class="fileupload col-xs-12">
               <fieldset>
                 <legend>Upload your CSV File</legend>
                 <input type="file" name="File Upload" id="csv-upload" accept=".csv" />
@@ -158,40 +158,38 @@
           <div class="row ten-px-vspace"></div>
           <div class="row ten-px-vspace"></div>
           <div class="row">
-            <button class="button col-xs-2" id="lead-create-button">Create New Lead</button>
+            <div class="col-xs-2">
+              <button class="button form-control" id="lead-create-button">Create New Lead</button>
+            </div>
           </div>
           <div class="row ten-px-vspace"></div>
+          <!-- problem here -->
           <div class="row">
-            <div>
-              <button class="button col-xs-2" id="mass-edit-button" disabled="true">
+            <div class="col-xs-2">
+              <button class="button form-control" id="mass-edit-button" disabled="true">
                 Edit Selection
               </button>
             </div>
-          </div>
-          <!-- problem here -->
-          <div class="row float-right">
-            <div>
-              <div class="col-sm-2">
-                <input type="text" class="form-control" id="filter-input" disabled="true" />
-              </div>
-              <div class="dropdown filter-dropdown col-sm-2">
-                <button class="btn btn-default dropdown-toggle" id="dropdown-button"
-                type="button col-sm-2" data-toggle="dropdown">Filter By<span class="caret"></span></button>
-                <ul class="dropdown-menu" id="filter-properties">
-                  <li><a href="#">firstName</a></li>
-                  <li><a href="#">lastName</a></li>
-                  <li><a href="#">brand</a></li>
-                  <li><a href="#">stage</a></li>
-                  <li><a href="#">id</a></li>
-                </ul>
-              </div>
-              <div>
-                <button class="button col-sm-2" id="apply-filter-button" disabled="true">Apply Filter</button>
-              </div>
-              <div>
-                <button class="button col-sm-2" id="filter-reset-button">Reset</button>
-              </div>
+            <div class="col-sm-2 col-sm-offset-4">
+              <input type="text" class="form-control" id="filter-input" disabled="true" />
             </div>
+            <div class="dropdown filter-dropdown col-sm-1">
+              <button class="btn btn-default dropdown-toggle form-control" id="dropdown-button"
+              type="button" data-toggle="dropdown">Filter By<span class="caret"></span></button>
+              <ul class="dropdown-menu" id="filter-properties">
+                <li><a href="#">firstName</a></li>
+                <li><a href="#">lastName</a></li>
+                <li><a href="#">brand</a></li>
+                <li><a href="#">stage</a></li>
+                <li><a href="#">id</a></li>
+              </ul>
+            </div>
+              <div class="col-sm-2">
+                <button class="button btn-default form-control" id="apply-filter-button" disabled="true">Apply Filter</button>
+              </div>
+              <div class="col-sm-1">
+                <button class="button btn-default form-control" id="filter-reset-button">Reset</button>
+              </div>
           </div>
           <div class="row ten-px-vspace"></div>
           <div class="row panel panel-default">
