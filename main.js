@@ -78,7 +78,10 @@ var anyAreChecked = function() {
   return isChecked;
 }
 
+// used to update leads if changes are detected
 var checkedLeadIds = [];
+// used to detect changes
+var massLead = new lead();
 var $massEditButton = document.querySelector('#mass-edit-button');
 $massEditButton.addEventListener('click', function () {
   checkedLeadIds = [];
@@ -88,26 +91,26 @@ $massEditButton.addEventListener('click', function () {
     }
   })
   var editLeads = getLeadArrayById(leads, checkedLeadIds);
-  var massLead = createMassEditLead(editLeads);
+  massLead = createMassEditLead(editLeads);
   var $popupRow = createElementWithClass('div', 'row');
   createLeadForm(massLead, $popupRow, true);
   updatePopupForm($popupRow);
 })
 
 var createMassEditLead = function(editLeads) {
-  var massLead = new lead();
+  var tempLead = new lead();
   for (var prop in editLeads[0]) {
     var arrPropValues = [];
     editLeads.forEach(function (lead) {
       arrPropValues.push(lead[prop].field);
     })
     if(arrPropValues.every(areArrayValuesIdentical)) {
-      massLead[prop].field = arrPropValues[0];
+      tempLead[prop].field = arrPropValues[0];
     } else {
-      massLead[prop].field = prop;
+      tempLead[prop].field = prop;
     }
   }
-  return massLead;
+  return tempLead;
 }
 
 var areArrayValuesIdentical = function(el, index, arr) {
@@ -284,16 +287,25 @@ var resetFilter = function() {
 var saveForm = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = getMasterLeadById(leads, inputLead.id.field);
+  var masterLead;
+
+  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
+    masterLead = massLead;
+    } else {
+    masterLead = getMasterLeadById(leads, inputLead.id.field);
+  }
 
   if (checkIfNew(inputLead)) {
     inputLead = assignNewId(inputLead);
     addLead(inputLead);
-    initializeLeadPage();
   } else if (checkIfChanged(inputLead, masterLead)) {
-    updateMasterLead(inputLead);
-    initializeLeadPage();
+    if ($leadEditPU.getAttribute('popup-type', 'mass')) {
+      updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+    } else {
+      updateMasterLead(inputLead, leads);
+    }
   }
+  initializeLeadPage();
   $leadEditPU.style.display = 'none';
 }
 
@@ -315,12 +327,11 @@ var getLeadInputArray = function() {
   return inputLead;
 }
 
-var updateMasterLead = function(inputLead) {
-  leads[getMasterLeadIndexById(leads, inputLead.id.field)] = inputLead;
+var updateMasterLead = function(inputLead, masterLeads) {
+  leads[getMasterLeadIndexById(masterLeads, inputLead.id.field)] = inputLead;
 }
 
 var checkIfChanged = function(inputLead, masterLead) {
-  var masterLead = getMasterLeadById(leads, inputLead.id.field);
 
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
@@ -400,21 +411,39 @@ var updatePopupForm = function($form, type) {
 var closePopup = function() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = getMasterLeadById(leads, inputLead.id.field);
+  var masterLead;
   if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-
-  } else {
+    masterLead = massLead;
+    } else {
     masterLead = getMasterLeadById(leads, inputLead.id.field);
   }
 
   if (checkIfChanged(inputLead, masterLead)) {
-    var answer = confirm('Save your changes?');
-    if (answer) {
-      updateMasterLead(inputLead);
+    if (confirm('Save your changes?')) {
+      if ($leadEditPU.getAttribute('popup-type', 'mass')) {
+        updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+      } else {
+        updateMasterLead(inputLead, leads);
+      }
       initializeLeadPage();
     }
   }
   $leadEditPU.style.display = 'none';
+}
+
+function isPropertyChanged(inputLead, massEditLead, prop) {
+  return (inputLead[prop].field !== massEditLead[prop].field);
+}
+
+var updateMassLeads = function(leadIds, inputLead, masterLeads, massEditLead) {
+  for (var prop in inputLead) {
+    if (isPropertyChanged(inputLead, massEditLead, prop)) {
+      leadIds.forEach(function (id) {
+        var editLeadPosition = getMasterLeadIndexById(masterLeads, id);
+        masterLeads[editLeadPosition][prop].field = inputLead[prop].field;
+      })
+    }
+  }
 }
 // Lead Object and Data
 function lead(fname, lname, bname, stage, id) {
