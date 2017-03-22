@@ -8,9 +8,9 @@ var grid = {
   filterBy: null,
   inputLead: new lead(),
   leads: [
-    createLead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
-    createLead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
-    createLead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+    lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
+    lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
+    lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
   ]
 }
 
@@ -25,7 +25,7 @@ function createElement(tagName, attributes, children) {
 
   // this loop is very useful in setting multiple attributes at once
   for (var prop in attributes) {
-    $element.setAttribute(prop, attributes[key]);
+    $element.setAttribute(prop, attributes[prop]);
   }
 
   // returns empty element if no children are specified. flexible!
@@ -39,35 +39,38 @@ function createElement(tagName, attributes, children) {
       $element.appendChild(document.createTextNode(child));
     }
   })
+  return $element;
 }
 
 function renderLead(lead) {
   var $lead =
-    h('tr', { lead-id: lead.id.field }, [
-      h('input, { type: 'checkbox', 'checkbox-id': lead.id.field, class: 'table-checkbox'}'),
-      h('td', { lead-id: lead.id.field }, [lead.id.field]),
-      h('td', { lead-id: lead.id.field }, [lead.firstName.field]),
-      h('td', { lead-id: lead.id.field }, [lead.lastName.field]),
-      h('td', { lead-id: lead.id.field }, [lead.brand.field]),
-      h('td', { lead-id: lead.id.field }, [lead.stage.field])
+    h('tr', { 'lead-id': lead.id.field }, [
+      h('input', { type: 'checkbox', 'checkbox-id': lead.id.field, class: 'table-checkbox'}),
+      h('td', { 'lead-id': lead.id.field }, [lead.id.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.firstName.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.lastName.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.brand.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.stage.field])
     ]);
-    return $lead;
+  return $lead;
 }
 
 function renderHeader() {
   var $header =
     h('tr', {}, [
-      h('input, { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}'),
-      h('td', {}, ['id']),
-      h('td', {}, ['firstName']),
-      h('td', {}, ['lastName']),
-      h('td', {}, ['brand']),
-      h('td', {}, ['stage'])
+      h('input', { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}),
+      h('th', {}, ['id']),
+      h('th', {}, ['firstName']),
+      h('th', {}, ['lastName']),
+      h('th', {}, ['brand']),
+      h('th', {}, ['stage'])
     ])
+  return $header;
 }
 
 function createTable(leads) {
-  $table = document.querySelector('#leads tbody');
+  $table = document.querySelector('#lead-table');
+  $table.appendChild(renderHeader());
   leads.forEach( function (lead) {
     $table.appendChild(renderLead(lead));
   })
@@ -112,7 +115,7 @@ function appendArrAsChild($node, arrElements) {
 
 function clearChildNodes($elem) {
   while($elem.firstChild) {
-    $elem.removeChild($table.firstChild);
+    $elem.removeChild($elem.firstChild);
   }
 }
 
@@ -152,7 +155,7 @@ function anyAreChecked() {
 // REQUIRES UPDATE
 function initializeLeadPage() {
   clearChildNodes($leadTable);
-  createTableElements(leads, $leadTable);
+  createTable(leads);
   resetFilter();
 }
 
