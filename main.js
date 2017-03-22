@@ -8,9 +8,9 @@ var grid = {
   filterBy: null,
   inputLead: new lead(),
   leads: [
-    lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
-    lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
-    lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+    new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
+    new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
+    new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
   ]
 }
 
@@ -170,17 +170,18 @@ function initializeLeadPage() {
 //   return arrRowData;
 // }
 
-function populateFormData(arrTableData, type, leadId) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.setAttribute('lead-id', leadId)
-    tempElem.textContent = arrTableData[datum].field;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
+// OBSOLETE
+// function populateFormData(arrTableData, type, leadId) {
+//   var arrRowData = [];
+//
+//   for (var datum in arrTableData) {
+//     var tempElem = document.createElement(type);
+//     tempElem.setAttribute('lead-id', leadId)
+//     tempElem.textContent = arrTableData[datum].field;
+//     arrRowData.push(tempElem);
+//   }
+//   return arrRowData;
+// }
 
 // OBSOLETE
 // function createCheckbox(type, leadId) {
@@ -228,19 +229,27 @@ function createLeadForm(editLead, $formRow, isEdit = true) {
     var $arrElems = [];
     var $propertyDiv = createElementWithClass('div', 'col-xs-2');
 
-    $arrElems[0] = createElementWithClass('span', 'input-group');
-    $arrElems[0].textContent = prop;
-    $arrElems[1] = createElementWithClass('input', 'form-control');
-    $arrElems[1].setAttribute('type', 'text');
-    $arrElems[1].setAttribute('lead-property', prop);
-    $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-    $arrElems[1].classList.add('lead-property-input')
-    $arrElems[1].disabled = !editLead[prop].isEditable;
+    var $propertyDiv = h('div', { class: 'col-xs-2'}, [
+      h('span', { class: 'input-group' }, [prop]),
+      h('input', { class: 'form-control lead-property-input', type: 'text',
+        'lead-property': prop, disabled: !editLead[prop].isEditable.toString(),
+        value: editLead[prop].field })
+    ])
+    console.log(prop + ':' + ' ' + (!editLead[prop].isEditable).toString());
 
-    if (isEdit) {
-      $arrElems[1].value = editLead[prop].field;
-    }
-    $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+    // $arrElems[0] = createElementWithClass('span', 'input-group');
+    // $arrElems[0].textContent = prop;
+    // $arrElems[1] = createElementWithClass('input', 'form-control');
+    // $arrElems[1].setAttribute('type', 'text');
+    // $arrElems[1].setAttribute('lead-property', prop);
+    // $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
+    // $arrElems[1].classList.add('lead-property-input')
+    // $arrElems[1].disabled = !editLead[prop].isEditable;
+    //
+    // if (isEdit) {
+    //   $arrElems[1].value = editLead[prop].field;
+    // }
+    // $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
     $formRow.appendChild($propertyDiv);
   }
 }
@@ -258,7 +267,6 @@ function updatePopupForm($form, type) {
 
 function closePopup() {
   var inputLead = getLeadInputArray();
-  console.log(inputLead);
   var $leadEditPU = document.querySelector('#lead-edit-popup');
   var masterLead = new lead();
 
@@ -272,7 +280,6 @@ function closePopup() {
       masterLead = getMasterLeadById(leads, inputLead.id.field);
   }
   if (checkIfChanged(inputLead, masterLead)) {
-    console.log(inputLead);
     if (confirm('Save your changes?')) {
       savePopupData(inputLead, masterLead);
       initializeLeadPage();
