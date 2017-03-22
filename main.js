@@ -97,7 +97,7 @@ function tempInitializeLeads() {
 
 // UTILITY FUNCTIONS
 
-// OBSOLETE
+// MAKE OBSOLETE
 function createElementWithClass(type, className) {
   var $tempElem = document.createElement(type);
 
@@ -105,7 +105,7 @@ function createElementWithClass(type, className) {
   return $tempElem;
 }
 
-// OBSOLETE
+// MAKE OBSOLETE
 function appendArrAsChild($node, arrElements) {
   for (var elem in arrElements) {
     $node.appendChild(arrElements[elem]);
@@ -152,7 +152,6 @@ function anyAreChecked() {
   return isChecked;
 }
 
-// REQUIRES UPDATE
 function initializeLeadPage() {
   clearChildNodes($leadTable);
   createTable(leads);
@@ -160,16 +159,16 @@ function initializeLeadPage() {
 }
 
 // OBSOLETE
-function createFormProperties(arrTableData, type) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.textContent = datum;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
+// function createFormProperties(arrTableData, type) {
+//   var arrRowData = [];
+//
+//   for (var datum in arrTableData) {
+//     var tempElem = document.createElement(type);
+//     tempElem.textContent = datum;
+//     arrRowData.push(tempElem);
+//   }
+//   return arrRowData;
+// }
 
 function populateFormData(arrTableData, type, leadId) {
   var arrRowData = [];
@@ -184,34 +183,34 @@ function populateFormData(arrTableData, type, leadId) {
 }
 
 // OBSOLETE
-function createCheckbox(type, leadId) {
-  var $type = document.createElement(type);
-  var $checkBox = document.createElement('input');
-  $checkBox.checked = false;
-  $checkBox.setAttribute('type', 'checkbox');
-  $checkBox.setAttribute('checkbox-id', leadId);
-  $checkBox.classList.add('table-checkbox');
-  $type.appendChild($checkBox);
-  return $type;
-}
+// function createCheckbox(type, leadId) {
+//   var $type = document.createElement(type);
+//   var $checkBox = document.createElement('input');
+//   $checkBox.checked = false;
+//   $checkBox.setAttribute('type', 'checkbox');
+//   $checkBox.setAttribute('checkbox-id', leadId);
+//   $checkBox.classList.add('table-checkbox');
+//   $type.appendChild($checkBox);
+//   return $type;
+// }
 
 // OBSOLETE
-function createTableElements(leads, $table) {
-  var $header = document.createElement('tr');
-
-  $header.appendChild(createCheckbox('th', 'header'));
-  $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
-
-  $table.appendChild($header);
-
-  for (var lead in leads) {
-    var $row = document.createElement('tr');
-    $row.appendChild(createCheckbox('td', leads[lead].id.field));
-    $row.setAttribute('lead-id', leads[lead].id.field);
-    $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
-    $table.appendChild($row);
-  }
-}
+// function createTableElements(leads, $table) {
+//   var $header = document.createElement('tr');
+//
+//   $header.appendChild(createCheckbox('th', 'header'));
+//   $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
+//
+//   $table.appendChild($header);
+//
+//   for (var lead in leads) {
+//     var $row = document.createElement('tr');
+//     $row.appendChild(createCheckbox('td', leads[lead].id.field));
+//     $row.setAttribute('lead-id', leads[lead].id.field);
+//     $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
+//     $table.appendChild($row);
+//   }
+// }
 
 function resetFilter() {
   var $dropdownButton = document.querySelector('#dropdown-button');
@@ -385,7 +384,6 @@ function updateMasterLead(inputLead, masterLeads) {
 }
 
 function checkIfChanged(inputLead, masterLead) {
-
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
       return true;
@@ -507,7 +505,7 @@ $applyFilterButton.addEventListener('click', function() {
     $filterInput.value, leads);
 
   clearChildNodes($leadTable);
-  createTableElements(filteredLeads, $leadTable);
+  createTable(filteredLeads);
 })
 
 var $resetFilterButton = document.querySelector('#filter-reset-button');
