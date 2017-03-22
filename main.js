@@ -54,6 +54,18 @@ function renderLead(lead) {
     return $lead;
 }
 
+function renderHeader() {
+  var $header =
+    h('tr', {}, [
+      h('input, { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}'),
+      h('td', {}, ['id']),
+      h('td', {}, ['firstName']),
+      h('td', {}, ['lastName']),
+      h('td', {}, ['brand']),
+      h('td', {}, ['stage'])
+    ])
+}
+
 function createTable(leads) {
   $table = document.querySelector('#leads tbody');
   leads.forEach( function (lead) {
@@ -137,12 +149,14 @@ function anyAreChecked() {
   return isChecked;
 }
 
+// REQUIRES UPDATE
 function initializeLeadPage() {
   clearChildNodes($leadTable);
   createTableElements(leads, $leadTable);
   resetFilter();
 }
 
+// OBSOLETE
 function createFormProperties(arrTableData, type) {
   var arrRowData = [];
 
@@ -166,6 +180,7 @@ function populateFormData(arrTableData, type, leadId) {
   return arrRowData;
 }
 
+// OBSOLETE
 function createCheckbox(type, leadId) {
   var $type = document.createElement(type);
   var $checkBox = document.createElement('input');
@@ -177,6 +192,7 @@ function createCheckbox(type, leadId) {
   return $type;
 }
 
+// OBSOLETE
 function createTableElements(leads, $table) {
   var $header = document.createElement('tr');
 
