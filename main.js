@@ -1,3 +1,45 @@
+/// GRID OBJECT SANDBOX
+
+// is there room for improvement in these properties?
+var grid = {
+  title: 'Leads',
+  selectAll: true,
+  columns: arrColumnHeaders,
+  filterBy: null,
+  inputLead: new lead(),
+  leads: [
+    createLead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
+    createLead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
+    createLead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+  ]
+}
+
+// updated element creator for use before React
+// can call function as h(tagName, attributes, children)
+var h = createElement;
+function createElement(tagName, attributes, children) {
+  var $element = document.createElement(tagName);
+
+  // this loop is very useful in setting multiple attributes at once
+  for (var prop in attributes) {
+    $element.setAttribute(prop, attributes[key]);
+  }
+
+  // returns empty element if no children are specified. flexible!
+  if (!children) return $element;
+
+  //checks to see if each child is a node. if not, sets element text to child
+  children.forEach(function (child) {
+    if (child instanceof Node) {
+      $element.appendChild(child);
+    } else {
+      $element.appendChild(document.createTextNode(child));
+    }
+  })
+}
+
+
+
 // GLOBAL VARS
 var checkedLeadIds = [];
 var massLead = new lead();
