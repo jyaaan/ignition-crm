@@ -14,6 +14,9 @@ var grid = {
   ]
 }
 
+// In production, this would be a setting to be retrieved
+var arrColumnHeaders = ['firstName', 'lastName', 'brand', 'stage', 'id'];
+
 // updated element creator for use before React
 // can call function as h(tagName, attributes, children)
 var h = createElement;
@@ -38,8 +41,25 @@ function createElement(tagName, attributes, children) {
   })
 }
 
+function renderLead(lead) {
+  var $lead =
+    h('tr', { lead-id: lead.id.field }, [
+      h('input, { type: 'checkbox', 'checkbox-id': lead.id.field, class: 'table-checkbox'}'),
+      h('td', { lead-id: lead.id.field }, [lead.id.field]),
+      h('td', { lead-id: lead.id.field }, [lead.firstName.field]),
+      h('td', { lead-id: lead.id.field }, [lead.lastName.field]),
+      h('td', { lead-id: lead.id.field }, [lead.brand.field]),
+      h('td', { lead-id: lead.id.field }, [lead.stage.field])
+    ]);
+    return $lead;
+}
 
-
+function createTable(leads) {
+  $table = document.querySelector('#leads tbody');
+  leads.forEach( function (lead) {
+    $table.appendChild(renderLead(lead));
+  })
+}
 // GLOBAL VARS
 var checkedLeadIds = [];
 var massLead = new lead();
@@ -62,6 +82,7 @@ function tempInitializeLeads() {
 
 // UTILITY FUNCTIONS
 
+// OBSOLETE
 function createElementWithClass(type, className) {
   var $tempElem = document.createElement(type);
 
@@ -69,6 +90,7 @@ function createElementWithClass(type, className) {
   return $tempElem;
 }
 
+// OBSOLETE
 function appendArrAsChild($node, arrElements) {
   for (var elem in arrElements) {
     $node.appendChild(arrElements[elem]);
@@ -76,9 +98,9 @@ function appendArrAsChild($node, arrElements) {
   return $node;
 }
 
-function clearChildNodes($table) {
-  while($table.firstChild) {
-    $table.removeChild($table.firstChild);
+function clearChildNodes($elem) {
+  while($elem.firstChild) {
+    $elem.removeChild($table.firstChild);
   }
 }
 
