@@ -6,7 +6,7 @@ var grid = {
   selectAll: true,
   columns: arrColumnHeaders,
   filterBy: null,
-  inputLead: new lead(),
+  uneditedLead: new lead(),
   leads: [
     new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
     new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
@@ -81,7 +81,7 @@ function createTable(leads) {
 var checkedLeadIds = [];
 var massLead = new lead();
 
-function lead(fname, lname, bname, stage, id) {
+function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
   this.firstName = { field: fname, isEditable: true };
   this.lastName = { field: lname, isEditable: true };
   this.brand = { field: bname, isEditable: true };
@@ -275,20 +275,22 @@ function updatePopupForm($form, type) {
 function closePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = new lead();
-
-  switch ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    case 'mass':
-      masterLead = massLead;
-      break;
-    case 'new':
-      break;
-    case 'edit':
-      masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
-  if (checkIfChanged(inputLead, masterLead)) {
+  // var masterLead = new lead();
+  //
+  // switch ($leadEditPU.getAttribute('popup-type', 'mass')) {
+  //   case 'mass':
+  //     masterLead = massLead;
+  //     break;
+  //   case 'new':
+  //     break;
+  //   case 'edit':
+  //     masterLead = getMasterLeadById(leads, inputLead.id.field);
+  // }
+  console.log('input: ' + inputLead);
+  console.log('unedit: ' + grid.uneditedLead);
+  if (checkIfChanged(inputLead, grid.uneditedLead)) {
     if (confirm('Save your changes?')) {
-      savePopupData(inputLead, masterLead);
+      savePopupData(inputLead, grid.uneditedLead);
       initializeLeadPage();
     }
   }
@@ -298,30 +300,43 @@ function closePopup() {
 function savePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = new lead();
+  // var masterLead = new lead();
 
-  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    masterLead = massLead;
-    } else {
-    masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
+  // if ($leadEditPU.getAttribute('popup-type', 'mass')) {
+  //   masterLead = massLead;
+  //   } else {
+  //   masterLead = getMasterLeadById(leads, inputLead.id.field);
+  // }
 
-  savePopupData(inputLead, masterLead);
+  savePopupData(inputLead, grid.uneditedLead);
   initializeLeadPage();
   $leadEditPU.style.display = 'none';
 }
 
 function savePopupData(inputLead, masterLead) {
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  if (checkIfNew(inputLead)) {
-    inputLead = assignNewId(inputLead);
-    addLead(inputLead);
-  } else if (checkIfChanged(inputLead, masterLead)) {
-    if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
-      updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+  // if (checkIfNew(inputLead)) {
+  //   inputLead = assignNewId(inputLead);
+  //   addLead(inputLead);
+  // } else if (checkIfChanged(inputLead, masterLead)) {
+  //   if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
+  //     updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+  //   } else {
+  //     updateMasterLead(inputLead, leads);
+  //   }
+  // }
+  if (checkIfChanged(inputLead, masterLead)) {
+    if (checkIfNew(inputLead)) {
+      inputLead = assignNewId(inputLead);
+      addLead(inputLead);
     } else {
-      updateMasterLead(inputLead, leads);
+      if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
+        updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+      } else {
+        updateMasterLead(inputLead, leads);
+      }
     }
+
   }
 }
 
@@ -376,10 +391,10 @@ function isPropertyChanged(inputLead, massEditLead, prop) {
 }
 
 function createLead() {
-  var newLead = new lead();
+  grid.uneditedLead = new lead();
   var $popupRow = createElementWithClass('div', 'row');
 
-  createLeadForm(newLead, $popupRow, false);
+  createLeadForm(grid.uneditedLead, $popupRow, false);
   updatePopupForm($popupRow, 'new');
 }
 
