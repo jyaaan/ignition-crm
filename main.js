@@ -88,31 +88,31 @@ function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
   this.id = { field: id, isEditable: false };
 };
 
-var leads = [];
-
-function tempInitializeLeads() {
-  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
-  leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
-  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
-}
+// var leads = [];
+//
+// function tempInitializeLeads() {
+//   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
+//   leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
+//   leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
+// }
 
 // UTILITY FUNCTIONS
 
 // MAKE OBSOLETE
-function createElementWithClass(type, className) {
-  var $tempElem = document.createElement(type);
-
-  $tempElem.classList.add(className);
-  return $tempElem;
-}
+// function createElementWithClass(type, className) {
+//   var $tempElem = document.createElement(type);
+//
+//   $tempElem.classList.add(className);
+//   return $tempElem;
+// }
 
 // MAKE OBSOLETE
-function appendArrAsChild($node, arrElements) {
-  for (var elem in arrElements) {
-    $node.appendChild(arrElements[elem]);
-  }
-  return $node;
-}
+// function appendArrAsChild($node, arrElements) {
+//   for (var elem in arrElements) {
+//     $node.appendChild(arrElements[elem]);
+//   }
+//   return $node;
+// }
 
 function clearChildNodes($elem) {
   while($elem.firstChild) {
@@ -153,9 +153,10 @@ function anyAreChecked() {
   return isChecked;
 }
 
+// could improve on $leadTable.
 function initializeLeadPage() {
   clearChildNodes($leadTable);
-  createTable(leads);
+  createTable(grid.leads);
   resetFilter();
 }
 
@@ -234,7 +235,7 @@ function resetFilter() {
 function createLeadForm(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
-    var $propertyDiv = createElementWithClass('div', 'col-xs-2');
+    // var $propertyDiv = createElementWithClass('div', 'col-xs-2');
     var inputValue = isEdit ? editLead[prop].field : '';
     var $propertyDiv = h('div', { class: 'col-xs-2'}, [
       h('span', { class: 'input-group' }, [prop]),
@@ -332,7 +333,7 @@ function savePopupData(inputLead, masterLead) {
       if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
         updateMassLeads(grid.checkedLeadIds, inputLead, grid.leads, masterLead);
       } else {
-        updateMasterLead(inputLead, leads);
+        updateMasterLead(inputLead, grid.leads);
       }
     }
 
@@ -391,8 +392,8 @@ function isPropertyChanged(inputLead, massEditLead, prop) {
 
 function createLead() {
   grid.uneditedLead = new lead();
-  var $popupRow = createElementWithClass('div', 'row');
-
+  // var $popupRow = createElementWithClass('div', 'row');
+  var $popupRow = h('div', { class: 'row' });
   createLeadForm(grid.uneditedLead, $popupRow, false);
   updatePopupForm($popupRow, 'new');
 }
@@ -433,7 +434,7 @@ function assignNewId(lead) {
 }
 
 function addLead(lead) {
-  leads.push(lead);
+  grid.leads.push(lead);
 }
 
 function getMasterLeadById(masterLeads, leadId) {
@@ -485,7 +486,8 @@ $leadTable.addEventListener('click', function (event) {
     grid.uneditedLead = grid.leads.find(function(lead) {
       return lead.id.field === leadId;
     });
-    var $popupRow = createElementWithClass('div', 'row');
+    // var $popupRow = createElementWithClass('div', 'row');
+    var $popupRow = h('div', { class: 'row' });
     createLeadForm(grid.uneditedLead, $popupRow, true);
     updatePopupForm($popupRow, 'edit');
   } else {
@@ -530,7 +532,7 @@ $applyFilterButton.addEventListener('click', function() {
   var $dropdownButton = document.querySelector('#dropdown-button');
   var $filterInput = document.querySelector('#filter-input');
   var filteredLeads = getFilteredLeads($dropdownButton.textContent,
-    $filterInput.value, leads);
+    $filterInput.value, grid.leads);
 
   clearChildNodes($leadTable);
   createTable(filteredLeads);
@@ -555,7 +557,7 @@ $fileUpload.addEventListener('change', function (event) {
     data = $.csv.toArrays(csvData);
     if (data && data.length > 0) {
       alert('Imported' + ' ' + data.length + ' ' + 'rows.');
-      Array.prototype.push.apply(leads, createLeadsFromCSV(data));
+      Array.prototype.push.apply(grid.leads, createLeadsFromCSV(data));
       initializeLeadPage();
     }
     reader.onerror = function () {
@@ -572,12 +574,13 @@ $massEditButton.addEventListener('click', function () {
       grid.checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
   })
-  var editLeads = getLeadArrayByIds(leads, grid.checkedLeadIds);
+  var editLeads = getLeadArrayByIds(grid.leads, grid.checkedLeadIds);
   grid.uneditedLead = createMassEditLead(editLeads);
-  var $popupRow = createElementWithClass('div', 'row');
+  // var $popupRow = createElementWithClass('div', 'row');
+  var $popupRow = h('div', { class: 'row' });
   createLeadForm(grid.uneditedLead, $popupRow, true);
   updatePopupForm($popupRow, 'mass');
 })
 
 // On run
-tempInitializeLeads();
+// tempInitializeLeads();
