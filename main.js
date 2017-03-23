@@ -1,8 +1,20 @@
 // GLOBAL VARS
-var checkedLeadIds = [];
-var massLead = new lead();
 
-function lead(fname, lname, bname, stage, id) {
+var grid = {
+  title: 'Leads',
+  selectAll: true,
+  columns: ['firstName', 'lastName', 'brand', 'stage', 'id'],
+  filterBy: null,
+  uneditedLead: new lead(),
+  checkedLeadIds: [],
+  leads: [
+    new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
+    new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
+    new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+  ]
+}
+
+function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
   this.firstName = { field: fname, isEditable: true };
   this.lastName = { field: lname, isEditable: true };
   this.brand = { field: bname, isEditable: true };
@@ -10,33 +22,11 @@ function lead(fname, lname, bname, stage, id) {
   this.id = { field: id, isEditable: false };
 };
 
-var leads = [];
-
-function tempInitializeLeads() {
-  leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
-  leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
-  leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
-}
-
 // UTILITY FUNCTIONS
 
-function createElementWithClass(type, className) {
-  var $tempElem = document.createElement(type);
-
-  $tempElem.classList.add(className);
-  return $tempElem;
-}
-
-function appendArrAsChild($node, arrElements) {
-  for (var elem in arrElements) {
-    $node.appendChild(arrElements[elem]);
-  }
-  return $node;
-}
-
-function clearChildNodes($table) {
-  while($table.firstChild) {
-    $table.removeChild($table.firstChild);
+function clearChildNodes($elem) {
+  while($elem.firstChild) {
+    $elem.removeChild($elem.firstChild);
   }
 }
 
@@ -63,6 +53,60 @@ function getLeadArrayByIds(masterLeads, arrId) {
 
 // TABLE FUNCTIONS
 
+var h = createElement;
+function createElement(tagName, attributes, children) {
+  var $element = document.createElement(tagName);
+
+  for (var prop in attributes) {
+    if (!(prop == 'disabled' && attributes[prop] == false)) {
+      $element.setAttribute(prop, attributes[prop]);
+    }
+  }
+  if (!children) return $element;
+  children.forEach(function (child) {
+    if (child instanceof Node) {
+      $element.appendChild(child);
+    } else {
+      $element.appendChild(document.createTextNode(child));
+    }
+  })
+  return $element;
+}
+
+function renderLead(lead) {
+  var $lead =
+    h('tr', { 'lead-id': lead.id.field }, [
+      h('input', { type: 'checkbox', 'checkbox-id': lead.id.field, class: 'table-checkbox'}),
+      h('td', { 'lead-id': lead.id.field }, [lead.id.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.firstName.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.lastName.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.brand.field]),
+      h('td', { 'lead-id': lead.id.field }, [lead.stage.field])
+    ]);
+  return $lead;
+}
+
+function renderHeader() {
+  var $header =
+    h('tr', {}, [
+      h('input', { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}),
+      h('th', {}, ['id']),
+      h('th', {}, ['firstName']),
+      h('th', {}, ['lastName']),
+      h('th', {}, ['brand']),
+      h('th', {}, ['stage'])
+    ])
+  return $header;
+}
+
+function createTable(leads) {
+  $table = document.querySelector('#lead-table');
+  $table.appendChild(renderHeader());
+  leads.forEach( function (lead) {
+    $table.appendChild(renderLead(lead));
+  })
+}
+
 function anyAreChecked() {
   var isChecked = false;
   document.querySelectorAll('.table-checkbox').forEach(function (box) {
@@ -75,59 +119,8 @@ function anyAreChecked() {
 
 function initializeLeadPage() {
   clearChildNodes($leadTable);
-  createTableElements(leads, $leadTable);
+  createTable(grid.leads);
   resetFilter();
-}
-
-function createFormProperties(arrTableData, type) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.textContent = datum;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
-
-function populateFormData(arrTableData, type, leadId) {
-  var arrRowData = [];
-
-  for (var datum in arrTableData) {
-    var tempElem = document.createElement(type);
-    tempElem.setAttribute('lead-id', leadId)
-    tempElem.textContent = arrTableData[datum].field;
-    arrRowData.push(tempElem);
-  }
-  return arrRowData;
-}
-
-function createCheckbox(type, leadId) {
-  var $type = document.createElement(type);
-  var $checkBox = document.createElement('input');
-  $checkBox.checked = false;
-  $checkBox.setAttribute('type', 'checkbox');
-  $checkBox.setAttribute('checkbox-id', leadId);
-  $checkBox.classList.add('table-checkbox');
-  $type.appendChild($checkBox);
-  return $type;
-}
-
-function createTableElements(leads, $table) {
-  var $header = document.createElement('tr');
-
-  $header.appendChild(createCheckbox('th', 'header'));
-  $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
-
-  $table.appendChild($header);
-
-  for (var lead in leads) {
-    var $row = document.createElement('tr');
-    $row.appendChild(createCheckbox('td', leads[lead].id.field));
-    $row.setAttribute('lead-id', leads[lead].id.field);
-    $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
-    $table.appendChild($row);
-  }
 }
 
 function resetFilter() {
@@ -144,21 +137,13 @@ function resetFilter() {
 function createLeadForm(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
-    var $propertyDiv = createElementWithClass('div', 'col-xs-2');
-
-    $arrElems[0] = createElementWithClass('span', 'input-group');
-    $arrElems[0].textContent = prop;
-    $arrElems[1] = createElementWithClass('input', 'form-control');
-    $arrElems[1].setAttribute('type', 'text');
-    $arrElems[1].setAttribute('lead-property', prop);
-    $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-    $arrElems[1].classList.add('lead-property-input')
-    $arrElems[1].disabled = !editLead[prop].isEditable;
-
-    if (isEdit) {
-      $arrElems[1].value = editLead[prop].field;
-    }
-    $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
+    var inputValue = isEdit ? editLead[prop].field : '';
+    var $propertyDiv = h('div', { class: 'col-xs-2'}, [
+      h('span', { class: 'input-group' }, [prop]),
+      h('input', { class: 'form-control lead-property-input', type: 'text',
+        'lead-property': prop, disabled: !editLead[prop].isEditable,
+        value: inputValue})
+    ])
     $formRow.appendChild($propertyDiv);
   }
 }
@@ -176,23 +161,11 @@ function updatePopupForm($form, type) {
 
 function closePopup() {
   var inputLead = getLeadInputArray();
-  console.log(inputLead);
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = new lead();
 
-  switch ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    case 'mass':
-      masterLead = massLead;
-      break;
-    case 'new':
-      break;
-    case 'edit':
-      masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
-  if (checkIfChanged(inputLead, masterLead)) {
-    console.log(inputLead);
+  if (checkIfChanged(inputLead, grid.uneditedLead)) {
     if (confirm('Save your changes?')) {
-      savePopupData(inputLead, masterLead);
+      savePopupData(inputLead, grid.uneditedLead);
       initializeLeadPage();
     }
   }
@@ -202,30 +175,26 @@ function closePopup() {
 function savePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  var masterLead = new lead();
 
-  if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-    masterLead = massLead;
-    } else {
-    masterLead = getMasterLeadById(leads, inputLead.id.field);
-  }
-
-  savePopupData(inputLead, masterLead);
+  savePopupData(inputLead, grid.uneditedLead);
   initializeLeadPage();
   $leadEditPU.style.display = 'none';
 }
 
 function savePopupData(inputLead, masterLead) {
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  if (checkIfNew(inputLead)) {
-    inputLead = assignNewId(inputLead);
-    addLead(inputLead);
-  } else if (checkIfChanged(inputLead, masterLead)) {
-    if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
-      updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+  if (checkIfChanged(inputLead, masterLead)) {
+    if (checkIfNew(inputLead)) {
+      inputLead = assignNewId(inputLead);
+      addLead(inputLead);
     } else {
-      updateMasterLead(inputLead, leads);
+      if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
+        updateMassLeads(grid.checkedLeadIds, inputLead, grid.leads, masterLead);
+      } else {
+        updateMasterLead(inputLead, grid.leads);
+      }
     }
+
   }
 }
 
@@ -280,10 +249,9 @@ function isPropertyChanged(inputLead, massEditLead, prop) {
 }
 
 function createLead() {
-  var newLead = new lead();
-  var $popupRow = createElementWithClass('div', 'row');
-
-  createLeadForm(newLead, $popupRow, false);
+  grid.uneditedLead = new lead();
+  var $popupRow = h('div', { class: 'row' });
+  createLeadForm(grid.uneditedLead, $popupRow, false);
   updatePopupForm($popupRow, 'new');
 }
 
@@ -302,7 +270,6 @@ function updateMasterLead(inputLead, masterLeads) {
 }
 
 function checkIfChanged(inputLead, masterLead) {
-
   for (var prop in masterLead) {
     if (masterLead[prop].field !== inputLead[prop].field) {
       return true;
@@ -324,7 +291,7 @@ function assignNewId(lead) {
 }
 
 function addLead(lead) {
-  leads.push(lead);
+  grid.leads.push(lead);
 }
 
 function getMasterLeadById(masterLeads, leadId) {
@@ -373,11 +340,11 @@ var $leadTable = document.querySelector('#lead-table');
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (leadId !== null) {
-    var editLead = leads.find(function(lead) {
+    grid.uneditedLead = grid.leads.find(function(lead) {
       return lead.id.field === leadId;
     });
-    var $popupRow = createElementWithClass('div', 'row');
-    createLeadForm(editLead, $popupRow, true);
+    var $popupRow = h('div', { class: 'row' });
+    createLeadForm(grid.uneditedLead, $popupRow, true);
     updatePopupForm($popupRow, 'edit');
   } else {
     if (event.target.getAttribute('checkbox-id') == 'header') {
@@ -421,10 +388,10 @@ $applyFilterButton.addEventListener('click', function() {
   var $dropdownButton = document.querySelector('#dropdown-button');
   var $filterInput = document.querySelector('#filter-input');
   var filteredLeads = getFilteredLeads($dropdownButton.textContent,
-    $filterInput.value, leads);
+    $filterInput.value, grid.leads);
 
   clearChildNodes($leadTable);
-  createTableElements(filteredLeads, $leadTable);
+  createTable(filteredLeads);
 })
 
 var $resetFilterButton = document.querySelector('#filter-reset-button');
@@ -446,7 +413,7 @@ $fileUpload.addEventListener('change', function (event) {
     data = $.csv.toArrays(csvData);
     if (data && data.length > 0) {
       alert('Imported' + ' ' + data.length + ' ' + 'rows.');
-      Array.prototype.push.apply(leads, createLeadsFromCSV(data));
+      Array.prototype.push.apply(grid.leads, createLeadsFromCSV(data));
       initializeLeadPage();
     }
     reader.onerror = function () {
@@ -457,18 +424,15 @@ $fileUpload.addEventListener('change', function (event) {
 
 var $massEditButton = document.querySelector('#mass-edit-button');
 $massEditButton.addEventListener('click', function () {
-  checkedLeadIds = [];
+  grid.checkedLeadIds = [];
   document.querySelectorAll('.table-checkbox').forEach(function (box) {
     if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
-      checkedLeadIds.push(box.getAttribute('checkbox-id'));
+      grid.checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
   })
-  var editLeads = getLeadArrayByIds(leads, checkedLeadIds);
-  massLead = createMassEditLead(editLeads);
-  var $popupRow = createElementWithClass('div', 'row');
-  createLeadForm(massLead, $popupRow, true);
+  var editLeads = getLeadArrayByIds(grid.leads, grid.checkedLeadIds);
+  grid.uneditedLead = createMassEditLead(editLeads);
+  var $popupRow = h('div', { class: 'row' });
+  createLeadForm(grid.uneditedLead, $popupRow, true);
   updatePopupForm($popupRow, 'mass');
 })
-
-// On run
-tempInitializeLeads();
