@@ -1,10 +1,9 @@
-/// GRID OBJECT SANDBOX
+// GLOBAL VARS
 
-// is there room for improvement in these properties?
 var grid = {
   title: 'Leads',
   selectAll: true,
-  columns: arrColumnHeaders,
+  columns: ['firstName', 'lastName', 'brand', 'stage', 'id'],
   filterBy: null,
   uneditedLead: new lead(),
   checkedLeadIds: [],
@@ -15,26 +14,55 @@ var grid = {
   ]
 }
 
-// In production, this would be a setting to be retrieved
-var arrColumnHeaders = ['firstName', 'lastName', 'brand', 'stage', 'id'];
+function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
+  this.firstName = { field: fname, isEditable: true };
+  this.lastName = { field: lname, isEditable: true };
+  this.brand = { field: bname, isEditable: true };
+  this.stage = { field: stage, isEditable: true };
+  this.id = { field: id, isEditable: false };
+};
 
-// updated element creator for use before React
-// can call function as h(tagName, attributes, children)
+// UTILITY FUNCTIONS
+
+function clearChildNodes($elem) {
+  while($elem.firstChild) {
+    $elem.removeChild($elem.firstChild);
+  }
+}
+
+function swapVisibility($elemToHide, $elemToShow) {
+  $elemToHide.classList.add('hidden');
+  $elemToShow.classList.remove('hidden');
+}
+
+function areArrayValuesIdentical(el, index, arr) {
+  if (index === 0) {
+    return true;
+  } else {
+    return (el === arr[index - 1]);
+  }
+}
+
+function getLeadArrayByIds(masterLeads, arrId) {
+  var matchLeads = [];
+  arrId.forEach(function (id) {
+    matchLeads.push(getMasterLeadById(masterLeads, id));
+  })
+  return matchLeads;
+}
+
+// TABLE FUNCTIONS
+
 var h = createElement;
 function createElement(tagName, attributes, children) {
   var $element = document.createElement(tagName);
 
-  // this loop is very useful in setting multiple attributes at once
   for (var prop in attributes) {
     if (!(prop == 'disabled' && attributes[prop] == false)) {
       $element.setAttribute(prop, attributes[prop]);
     }
   }
-
-  // returns empty element if no children are specified. flexible!
   if (!children) return $element;
-
-  //checks to see if each child is a node. if not, sets element text to child
   children.forEach(function (child) {
     if (child instanceof Node) {
       $element.appendChild(child);
@@ -78,70 +106,6 @@ function createTable(leads) {
     $table.appendChild(renderLead(lead));
   })
 }
-// GLOBAL VARS
-
-function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
-  this.firstName = { field: fname, isEditable: true };
-  this.lastName = { field: lname, isEditable: true };
-  this.brand = { field: bname, isEditable: true };
-  this.stage = { field: stage, isEditable: true };
-  this.id = { field: id, isEditable: false };
-};
-
-// var leads = [];
-//
-// function tempInitializeLeads() {
-//   leads.push(new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'));
-//   leads.push(new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'));
-//   leads.push(new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3'));
-// }
-
-// UTILITY FUNCTIONS
-
-// MAKE OBSOLETE
-// function createElementWithClass(type, className) {
-//   var $tempElem = document.createElement(type);
-//
-//   $tempElem.classList.add(className);
-//   return $tempElem;
-// }
-
-// MAKE OBSOLETE
-// function appendArrAsChild($node, arrElements) {
-//   for (var elem in arrElements) {
-//     $node.appendChild(arrElements[elem]);
-//   }
-//   return $node;
-// }
-
-function clearChildNodes($elem) {
-  while($elem.firstChild) {
-    $elem.removeChild($elem.firstChild);
-  }
-}
-
-function swapVisibility($elemToHide, $elemToShow) {
-  $elemToHide.classList.add('hidden');
-  $elemToShow.classList.remove('hidden');
-}
-
-function areArrayValuesIdentical(el, index, arr) {
-  if (index === 0) {
-    return true;
-  } else {
-    return (el === arr[index - 1]);
-  }
-}
-
-function getLeadArrayByIds(masterLeads, arrId) {
-  var matchLeads = [];
-  arrId.forEach(function (id) {
-    matchLeads.push(getMasterLeadById(masterLeads, id));
-  })
-  return matchLeads;
-}
-
-// TABLE FUNCTIONS
 
 function anyAreChecked() {
   var isChecked = false;
@@ -153,67 +117,11 @@ function anyAreChecked() {
   return isChecked;
 }
 
-// could improve on $leadTable.
 function initializeLeadPage() {
   clearChildNodes($leadTable);
   createTable(grid.leads);
   resetFilter();
 }
-
-// OBSOLETE
-// function createFormProperties(arrTableData, type) {
-//   var arrRowData = [];
-//
-//   for (var datum in arrTableData) {
-//     var tempElem = document.createElement(type);
-//     tempElem.textContent = datum;
-//     arrRowData.push(tempElem);
-//   }
-//   return arrRowData;
-// }
-
-// OBSOLETE
-// function populateFormData(arrTableData, type, leadId) {
-//   var arrRowData = [];
-//
-//   for (var datum in arrTableData) {
-//     var tempElem = document.createElement(type);
-//     tempElem.setAttribute('lead-id', leadId)
-//     tempElem.textContent = arrTableData[datum].field;
-//     arrRowData.push(tempElem);
-//   }
-//   return arrRowData;
-// }
-
-// OBSOLETE
-// function createCheckbox(type, leadId) {
-//   var $type = document.createElement(type);
-//   var $checkBox = document.createElement('input');
-//   $checkBox.checked = false;
-//   $checkBox.setAttribute('type', 'checkbox');
-//   $checkBox.setAttribute('checkbox-id', leadId);
-//   $checkBox.classList.add('table-checkbox');
-//   $type.appendChild($checkBox);
-//   return $type;
-// }
-
-// OBSOLETE
-// function createTableElements(leads, $table) {
-//   var $header = document.createElement('tr');
-//
-//   $header.appendChild(createCheckbox('th', 'header'));
-//   $header = appendArrAsChild($header, createFormProperties(leads[0], 'th'));
-//
-//   $table.appendChild($header);
-//
-//   for (var lead in leads) {
-//     var $row = document.createElement('tr');
-//     $row.appendChild(createCheckbox('td', leads[lead].id.field));
-//     $row.setAttribute('lead-id', leads[lead].id.field);
-//     $row = appendArrAsChild($row, populateFormData(leads[lead], 'td', leads[lead].id.field));
-//     $table.appendChild($row);
-//   }
-// }
 
 function resetFilter() {
   var $dropdownButton = document.querySelector('#dropdown-button');
@@ -226,16 +134,9 @@ function resetFilter() {
 
 // POPUP FUNCTIONS
 
-// HTMLDocument.prototype.disableElement = function(isDisabled) {
-//   if (isDisabled) {
-//     this.setAttribute('disabled', 'true');
-//   }
-// }
-
 function createLeadForm(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
-    // var $propertyDiv = createElementWithClass('div', 'col-xs-2');
     var inputValue = isEdit ? editLead[prop].field : '';
     var $propertyDiv = h('div', { class: 'col-xs-2'}, [
       h('span', { class: 'input-group' }, [prop]),
@@ -243,20 +144,6 @@ function createLeadForm(editLead, $formRow, isEdit = true) {
         'lead-property': prop, disabled: !editLead[prop].isEditable,
         value: inputValue})
     ])
-
-    // $arrElems[0] = createElementWithClass('span', 'input-group');
-    // $arrElems[0].textContent = prop;
-    // $arrElems[1] = createElementWithClass('input', 'form-control');
-    // $arrElems[1].setAttribute('type', 'text');
-    // $arrElems[1].setAttribute('lead-property', prop);
-    // $arrElems[1].setAttribute('aria-label', 'lead-' + prop);
-    // $arrElems[1].classList.add('lead-property-input')
-    // $arrElems[1].disabled = !editLead[prop].isEditable;
-    //
-    // if (isEdit) {
-    //   $arrElems[1].value = editLead[prop].field;
-    // }
-    // $propertyDiv = appendArrAsChild($propertyDiv, $arrElems);
     $formRow.appendChild($propertyDiv);
   }
 }
@@ -275,17 +162,7 @@ function updatePopupForm($form, type) {
 function closePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  // var masterLead = new lead();
-  //
-  // switch ($leadEditPU.getAttribute('popup-type', 'mass')) {
-  //   case 'mass':
-  //     masterLead = massLead;
-  //     break;
-  //   case 'new':
-  //     break;
-  //   case 'edit':
-  //     masterLead = getMasterLeadById(leads, inputLead.id.field);
-  // }
+
   console.log('input: ' + inputLead);
   console.log('unedit: ' + grid.uneditedLead);
   if (checkIfChanged(inputLead, grid.uneditedLead)) {
@@ -300,13 +177,6 @@ function closePopup() {
 function savePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  // var masterLead = new lead();
-
-  // if ($leadEditPU.getAttribute('popup-type', 'mass')) {
-  //   masterLead = massLead;
-  //   } else {
-  //   masterLead = getMasterLeadById(leads, inputLead.id.field);
-  // }
 
   savePopupData(inputLead, grid.uneditedLead);
   initializeLeadPage();
@@ -315,16 +185,6 @@ function savePopup() {
 
 function savePopupData(inputLead, masterLead) {
   var $leadEditPU = document.querySelector('#lead-edit-popup');
-  // if (checkIfNew(inputLead)) {
-  //   inputLead = assignNewId(inputLead);
-  //   addLead(inputLead);
-  // } else if (checkIfChanged(inputLead, masterLead)) {
-  //   if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
-  //     updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
-  //   } else {
-  //     updateMasterLead(inputLead, leads);
-  //   }
-  // }
   if (checkIfChanged(inputLead, masterLead)) {
     if (checkIfNew(inputLead)) {
       inputLead = assignNewId(inputLead);
@@ -392,7 +252,6 @@ function isPropertyChanged(inputLead, massEditLead, prop) {
 
 function createLead() {
   grid.uneditedLead = new lead();
-  // var $popupRow = createElementWithClass('div', 'row');
   var $popupRow = h('div', { class: 'row' });
   createLeadForm(grid.uneditedLead, $popupRow, false);
   updatePopupForm($popupRow, 'new');
@@ -486,7 +345,6 @@ $leadTable.addEventListener('click', function (event) {
     grid.uneditedLead = grid.leads.find(function(lead) {
       return lead.id.field === leadId;
     });
-    // var $popupRow = createElementWithClass('div', 'row');
     var $popupRow = h('div', { class: 'row' });
     createLeadForm(grid.uneditedLead, $popupRow, true);
     updatePopupForm($popupRow, 'edit');
@@ -576,11 +434,7 @@ $massEditButton.addEventListener('click', function () {
   })
   var editLeads = getLeadArrayByIds(grid.leads, grid.checkedLeadIds);
   grid.uneditedLead = createMassEditLead(editLeads);
-  // var $popupRow = createElementWithClass('div', 'row');
   var $popupRow = h('div', { class: 'row' });
   createLeadForm(grid.uneditedLead, $popupRow, true);
   updatePopupForm($popupRow, 'mass');
 })
-
-// On run
-// tempInitializeLeads();
