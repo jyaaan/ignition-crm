@@ -236,12 +236,12 @@ function createLeadForm(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
     var $propertyDiv = createElementWithClass('div', 'col-xs-2');
-
+    var inputValue = isEdit ? editLead[prop].field : '';
     var $propertyDiv = h('div', { class: 'col-xs-2'}, [
       h('span', { class: 'input-group' }, [prop]),
       h('input', { class: 'form-control lead-property-input', type: 'text',
         'lead-property': prop, disabled: !editLead[prop].isEditable,
-        value: editLead[prop].field })
+        value: inputValue})
     ])
 
     // $arrElems[0] = createElementWithClass('span', 'input-group');
