@@ -163,8 +163,6 @@ function closePopup() {
   var inputLead = getLeadInputArray();
   var $leadEditPU = document.querySelector('#lead-edit-popup');
 
-  console.log('input: ' + inputLead);
-  console.log('unedit: ' + grid.uneditedLead);
   if (checkIfChanged(inputLead, grid.uneditedLead)) {
     if (confirm('Save your changes?')) {
       savePopupData(inputLead, grid.uneditedLead);
