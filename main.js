@@ -25,7 +25,9 @@ function createElement(tagName, attributes, children) {
 
   // this loop is very useful in setting multiple attributes at once
   for (var prop in attributes) {
-    $element.setAttribute(prop, attributes[prop]);
+    if (!(prop == 'disabled' && attributes[prop] == false)) {
+      $element.setAttribute(prop, attributes[prop]);
+    }
   }
 
   // returns empty element if no children are specified. flexible!
@@ -224,6 +226,12 @@ function resetFilter() {
 
 // POPUP FUNCTIONS
 
+// HTMLDocument.prototype.disableElement = function(isDisabled) {
+//   if (isDisabled) {
+//     this.setAttribute('disabled', 'true');
+//   }
+// }
+
 function createLeadForm(editLead, $formRow, isEdit = true) {
   for (var prop in editLead) {
     var $arrElems = [];
@@ -232,10 +240,9 @@ function createLeadForm(editLead, $formRow, isEdit = true) {
     var $propertyDiv = h('div', { class: 'col-xs-2'}, [
       h('span', { class: 'input-group' }, [prop]),
       h('input', { class: 'form-control lead-property-input', type: 'text',
-        'lead-property': prop, disabled: !editLead[prop].isEditable.toString(),
+        'lead-property': prop, disabled: !editLead[prop].isEditable,
         value: editLead[prop].field })
     ])
-    console.log(prop + ':' + ' ' + (!editLead[prop].isEditable).toString());
 
     // $arrElems[0] = createElementWithClass('span', 'input-group');
     // $arrElems[0].textContent = prop;
