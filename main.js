@@ -7,6 +7,7 @@ var grid = {
   columns: arrColumnHeaders,
   filterBy: null,
   uneditedLead: new lead(),
+  checkedLeadIds: [],
   leads: [
     new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
     new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
@@ -78,8 +79,6 @@ function createTable(leads) {
   })
 }
 // GLOBAL VARS
-var checkedLeadIds = [];
-var massLead = new lead();
 
 function lead(fname = '', lname = '', bname = '', stage = '', id = '') {
   this.firstName = { field: fname, isEditable: true };
@@ -331,7 +330,7 @@ function savePopupData(inputLead, masterLead) {
       addLead(inputLead);
     } else {
       if ($leadEditPU.getAttribute('popup-type', 'mass') === 'mass') {
-        updateMassLeads(checkedLeadIds, inputLead, leads, masterLead);
+        updateMassLeads(grid.checkedLeadIds, inputLead, grid.leads, masterLead);
       } else {
         updateMasterLead(inputLead, leads);
       }
@@ -483,11 +482,11 @@ var $leadTable = document.querySelector('#lead-table');
 $leadTable.addEventListener('click', function (event) {
   var leadId = event.target.getAttribute('lead-id');
   if (leadId !== null) {
-    var editLead = leads.find(function(lead) {
+    grid.uneditedLead = grid.leads.find(function(lead) {
       return lead.id.field === leadId;
     });
     var $popupRow = createElementWithClass('div', 'row');
-    createLeadForm(editLead, $popupRow, true);
+    createLeadForm(grid.uneditedLead, $popupRow, true);
     updatePopupForm($popupRow, 'edit');
   } else {
     if (event.target.getAttribute('checkbox-id') == 'header') {
@@ -567,16 +566,16 @@ $fileUpload.addEventListener('change', function (event) {
 
 var $massEditButton = document.querySelector('#mass-edit-button');
 $massEditButton.addEventListener('click', function () {
-  checkedLeadIds = [];
+  grid.checkedLeadIds = [];
   document.querySelectorAll('.table-checkbox').forEach(function (box) {
     if (box.checked && box.getAttribute('checkbox-id') !== 'header'){
-      checkedLeadIds.push(box.getAttribute('checkbox-id'));
+      grid.checkedLeadIds.push(box.getAttribute('checkbox-id'));
     }
   })
-  var editLeads = getLeadArrayByIds(leads, checkedLeadIds);
-  massLead = createMassEditLead(editLeads);
+  var editLeads = getLeadArrayByIds(leads, grid.checkedLeadIds);
+  grid.uneditedLead = createMassEditLead(editLeads);
   var $popupRow = createElementWithClass('div', 'row');
-  createLeadForm(massLead, $popupRow, true);
+  createLeadForm(grid.uneditedLead, $popupRow, true);
   updatePopupForm($popupRow, 'mass');
 })
 
