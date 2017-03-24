@@ -1,3 +1,22 @@
+// SORTING STUFF
+
+function sortLeads(leads, prop) {
+
+  function compareLower(a, b) {
+    var propA = a[prop].value.toLowerCase();
+    var propB = b[prop].value.toLowerCase();
+
+    // Check to see if these variables are necessary.
+    if (propA < propB) {
+      return -1;
+    }
+    if (propA > propB {
+      return 1;
+    }
+      return 0;
+  }
+}
+
 // GLOBAL VARS
 
 var grid = {
