@@ -373,7 +373,6 @@ $leadTable.addEventListener('click', function (event) {
       document.querySelectorAll('.table-checkbox').forEach(function (box) {
         box.checked = event.target.checked;
       })
-      document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
     } else if (event.target.getAttribute('type') != 'checkbox') {
       if (grid.sort.property != event.target.textContent){
         grid.sort.property = event.target.textContent;
@@ -389,6 +388,7 @@ $leadTable.addEventListener('click', function (event) {
       clearChildNodes($leadTable);
       createTable(sortedLeads);
     }
+    document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
   }
 })
 
