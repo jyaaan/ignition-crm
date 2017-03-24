@@ -105,7 +105,6 @@ function createTable(leads) {
   $table = document.querySelector('#lead-table');
   $table.appendChild(renderHeader());
   if (grid.sort.type != '') {
-    console.log(document.querySelector('[header-id=id]'));
     document.querySelector('[header-id=' + grid.sort.property).style.backgroundColor = '#42c5f4';
   }
   leads.forEach( function (lead) {
@@ -236,7 +235,7 @@ function updateMassLeads(leadIds, inputLead, masterLeads, massEditLead) {
 // LEAD DATA FUNCTIONS
 
 function sortLeads(leads, prop) {
-  var leadsCopy = leads;
+  var leadsCopy = leads.slice();
   leadsCopy.sort(function (a, b) {
     var propA = a[prop].field.toLowerCase();
     var propB = b[prop].field.toLowerCase();
@@ -356,6 +355,7 @@ $leadButton.addEventListener('click',function () {
 
 var $homeButton = document.querySelector('#home-button');
 $homeButton.addEventListener('click', function () {
+  grid.sort = { property: '', type: '' };
   swapVisibility($leadDetails, $landingPageDetails);
   swapVisibility($leadDashboard, $landingPageDashboard);
 })
