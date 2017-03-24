@@ -29,9 +29,10 @@ var grid = {
   checkedLeadIds: [],
   sort: { property: '', type: '' },
   leads: [
-    new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
-    new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
-    new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+    new lead('Alex', 'Timmons', 'King Leonidas', 'Demo', '90c5n713h'),
+    new lead('chris', 'Hobbs', 'Fake Doors', 'Negotiations', '2jobm5m6e'),
+    new lead('John', 'yamashiro', 'Eatify Basics', 'Icebox', 'ublbjq4h5'),
+    new lead('Erik', 'Buchannan', 'Mongo Burger', 'Demo', '	qncks349a')
   ]
 }
 
