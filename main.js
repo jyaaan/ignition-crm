@@ -1,20 +1,22 @@
 // SORTING STUFF
 
 function sortLeads(leads, prop) {
+  var leadsCopy = leads;
+  leadsCopy.sort(function (a, b) {
+    console.log(a);
+    var propA = a[prop].field.toLowerCase();
+    var propB = b[prop].field.toLowerCase();
 
-  function compareLower(a, b) {
-    var propA = a[prop].value.toLowerCase();
-    var propB = b[prop].value.toLowerCase();
-
-    // Check to see if these variables are necessary.
     if (propA < propB) {
       return -1;
     }
-    if (propA > propB {
+    if (propA > propB) {
       return 1;
     }
-      return 0;
-  }
+    return 0;
+  })
+
+  return leadsCopy;
 }
 
 // GLOBAL VARS
@@ -26,6 +28,7 @@ var grid = {
   filterBy: null,
   uneditedLead: new lead(),
   checkedLeadIds: [],
+  sort: { property: '', type: '' },
   leads: [
     new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
     new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
@@ -370,8 +373,19 @@ $leadTable.addEventListener('click', function (event) {
       document.querySelectorAll('.table-checkbox').forEach(function (box) {
         box.checked = event.target.checked;
       })
+      document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
+    } else if (event.target.getAttribute('type') != 'checkbox') {
+      grid.sort.property = event.target.textContent;
+      var sortedLeads = sortLeads(grid.leads, event.target.textContent);
+      if (grid.sort.type == 'descending' || grid.sort.type == '') {
+        grid.sort.type = 'ascending';
+      } else {
+        sortedLeads.reverse();
+        grid.sort.type = 'descending';
+      }
+      clearChildNodes($leadTable);
+      createTable(sortedLeads);
     }
-    document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
   }
 })
 
