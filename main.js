@@ -1,23 +1,3 @@
-// SORTING STUFF
-
-function sortLeads(leads, prop) {
-  var leadsCopy = leads;
-  leadsCopy.sort(function (a, b) {
-    var propA = a[prop].field.toLowerCase();
-    var propB = b[prop].field.toLowerCase();
-
-    if (propA < propB) {
-      return -1;
-    }
-    if (propA > propB) {
-      return 1;
-    }
-    return 0;
-  })
-
-  return leadsCopy;
-}
-
 // GLOBAL VARS
 
 var grid = {
@@ -250,6 +230,24 @@ function updateMassLeads(leadIds, inputLead, masterLeads, massEditLead) {
 }
 
 // LEAD DATA FUNCTIONS
+
+function sortLeads(leads, prop) {
+  var leadsCopy = leads;
+  leadsCopy.sort(function (a, b) {
+    var propA = a[prop].field.toLowerCase();
+    var propB = b[prop].field.toLowerCase();
+
+    if (propA < propB) {
+      return -1;
+    }
+    if (propA > propB) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return leadsCopy;
+}
 
 function createLeadsFromCSV(csvData) {
   var importLeads = [];
