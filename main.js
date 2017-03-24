@@ -92,11 +92,11 @@ function renderHeader() {
   var $header =
     h('tr', {}, [
       h('input', { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}),
-      h('th', {}, ['id']),
-      h('th', {}, ['firstName']),
-      h('th', {}, ['lastName']),
-      h('th', {}, ['brand']),
-      h('th', {}, ['stage'])
+      h('th', { 'header-id': 'id' }, ['id']),
+      h('th', { 'header-id': 'firstName' }, ['firstName']),
+      h('th', { 'header-id': 'lastName' }, ['lastName']),
+      h('th', { 'header-id': 'brand' }, ['brand']),
+      h('th', { 'header-id' : 'stage' }, ['stage'])
     ])
   return $header;
 }
@@ -104,6 +104,10 @@ function renderHeader() {
 function createTable(leads) {
   $table = document.querySelector('#lead-table');
   $table.appendChild(renderHeader());
+  if (grid.sort.type != '') {
+    console.log(document.querySelector('[header-id=id]'));
+    document.querySelector('[header-id=id]').setAttribute('background-color', '#0000FF');
+  }
   leads.forEach( function (lead) {
     $table.appendChild(renderLead(lead));
   })
@@ -379,9 +383,11 @@ $leadTable.addEventListener('click', function (event) {
       var sortedLeads = sortLeads(grid.leads, event.target.textContent);
       if (grid.sort.type == 'descending' || grid.sort.type == '') {
         grid.sort.type = 'ascending';
+        event.target.setAttribute('background-color', '#0000FF')
       } else {
         sortedLeads.reverse();
         grid.sort.type = 'descending';
+        event.target.setAttribute('background-color', 'red');
       }
       clearChildNodes($leadTable);
       createTable(sortedLeads);
