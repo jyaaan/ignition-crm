@@ -374,7 +374,6 @@ $leadTable.addEventListener('click', function (event) {
       })
       document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
     } else if (event.target.getAttribute('type') != 'checkbox') {
-
       if (grid.sort.property != event.target.textContent){
         grid.sort.property = event.target.textContent;
         grid.sort.type = '';
