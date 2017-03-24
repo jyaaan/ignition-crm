@@ -3,7 +3,6 @@
 function sortLeads(leads, prop) {
   var leadsCopy = leads;
   leadsCopy.sort(function (a, b) {
-    console.log(a);
     var propA = a[prop].field.toLowerCase();
     var propB = b[prop].field.toLowerCase();
 
@@ -375,7 +374,11 @@ $leadTable.addEventListener('click', function (event) {
       })
       document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
     } else if (event.target.getAttribute('type') != 'checkbox') {
-      grid.sort.property = event.target.textContent;
+
+      if (grid.sort.property != event.target.textContent){
+        grid.sort.property = event.target.textContent;
+        grid.sort.type = '';
+      }
       var sortedLeads = sortLeads(grid.leads, event.target.textContent);
       if (grid.sort.type == 'descending' || grid.sort.type == '') {
         grid.sort.type = 'ascending';
