@@ -7,10 +7,12 @@ var grid = {
   filterBy: null,
   uneditedLead: new lead(),
   checkedLeadIds: [],
+  sort: { property: '', type: '' },
   leads: [
-    new lead('alex', 'timmons', 'king leonidas', 'demo', 'aaa1'),
-    new lead('chris', 'hobbs', 'fake doors', 'negotiations', 'aaa2'),
-    new lead('john', 'yamashiro', 'eatify basics', 'icebox', 'aaa3')
+    new lead('Alex', 'Timmons', 'King Leonidas', 'Demo', '90c5n713h'),
+    new lead('chris', 'Hobbs', 'Fake Doors', 'Negotiations', '2jobm5m6e'),
+    new lead('John', 'yamashiro', 'Eatify Basics', 'Icebox', 'ublbjq4h5'),
+    new lead('Erik', 'Buchannan', 'Mongo Burger', 'Demo', '	qncks349a')
   ]
 }
 
@@ -90,11 +92,11 @@ function renderHeader() {
   var $header =
     h('tr', {}, [
       h('input', { type: 'checkbox', 'checkbox-id': 'header', class: 'table-checkbox'}),
-      h('th', {}, ['id']),
-      h('th', {}, ['firstName']),
-      h('th', {}, ['lastName']),
-      h('th', {}, ['brand']),
-      h('th', {}, ['stage'])
+      h('th', { 'header-id': 'id' }, ['id']),
+      h('th', { 'header-id': 'firstName' }, ['firstName']),
+      h('th', { 'header-id': 'lastName' }, ['lastName']),
+      h('th', { 'header-id': 'brand' }, ['brand']),
+      h('th', { 'header-id' : 'stage' }, ['stage'])
     ])
   return $header;
 }
@@ -102,6 +104,9 @@ function renderHeader() {
 function createTable(leads) {
   $table = document.querySelector('#lead-table');
   $table.appendChild(renderHeader());
+  if (grid.sort.type != '') {
+    document.querySelector('[header-id=' + grid.sort.property).style.backgroundColor = '#42c5f4';
+  }
   leads.forEach( function (lead) {
     $table.appendChild(renderLead(lead));
   })
@@ -229,6 +234,24 @@ function updateMassLeads(leadIds, inputLead, masterLeads, massEditLead) {
 
 // LEAD DATA FUNCTIONS
 
+function sortLeads(leads, prop) {
+  var leadsCopy = leads.slice();
+  leadsCopy.sort(function (a, b) {
+    var propA = a[prop].field.toLowerCase();
+    var propB = b[prop].field.toLowerCase();
+
+    if (propA < propB) {
+      return -1;
+    }
+    if (propA > propB) {
+      return 1;
+    }
+    return 0;
+  })
+
+  return leadsCopy;
+}
+
 function createLeadsFromCSV(csvData) {
   var importLeads = [];
   var propertyNames = csvData[0];
@@ -332,6 +355,7 @@ $leadButton.addEventListener('click',function () {
 
 var $homeButton = document.querySelector('#home-button');
 $homeButton.addEventListener('click', function () {
+  grid.sort = { property: '', type: '' };
   swapVisibility($leadDetails, $landingPageDetails);
   swapVisibility($leadDashboard, $landingPageDashboard);
 })
@@ -351,6 +375,20 @@ $leadTable.addEventListener('click', function (event) {
       document.querySelectorAll('.table-checkbox').forEach(function (box) {
         box.checked = event.target.checked;
       })
+    } else if (event.target.getAttribute('type') != 'checkbox') {
+      if (grid.sort.property != event.target.textContent){
+        grid.sort.property = event.target.textContent;
+        grid.sort.type = '';
+      }
+      var sortedLeads = sortLeads(grid.leads, event.target.textContent);
+      if (grid.sort.type == 'descending' || grid.sort.type == '') {
+        grid.sort.type = 'ascending';
+      } else {
+        sortedLeads.reverse();
+        grid.sort.type = 'descending';
+      }
+      clearChildNodes($leadTable);
+      createTable(sortedLeads);
     }
     document.querySelector('#mass-edit-button').disabled = !anyAreChecked();
   }
@@ -364,6 +402,7 @@ $leadSaveButton.addEventListener('click', function () {
 var $leadCreateButton = document.querySelector('#lead-create-button');
 $leadCreateButton.addEventListener('click', function () {
   createLead();
+  grid.sort = { property: '', type: '' };
 })
 
 var $closePU = document.querySelector('.close');
@@ -406,6 +445,7 @@ $fileUpload.addEventListener('change', function (event) {
   var reader = new FileReader();
   var newLeads = [];
 
+  grid.sort = { property: '', type: '' };
   reader.readAsText(file);
   reader.onload = function (loadEvent) {
     var csvData = loadEvent.target.result;
